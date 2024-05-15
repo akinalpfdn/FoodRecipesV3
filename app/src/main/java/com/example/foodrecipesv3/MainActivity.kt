@@ -8,6 +8,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.content.Intent
+import android.widget.Button
 
 /*
 class MainActivity : AppCompatActivity() {
@@ -31,6 +33,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val goToLoginButton: Button = findViewById(R.id.goToLoginButton)
+        val goToRegisterButton: Button = findViewById(R.id.goToRegisterButton)
+
+        goToLoginButton.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        goToRegisterButton.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
+        /*
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setOnNavigationItemSelectedListener { item: MenuItem ->
             when (item.itemId) {
@@ -47,11 +65,15 @@ class MainActivity : AppCompatActivity() {
         }
         // Load the default fragment
             bottomNav.selectedItemId = R.id.nav_home
-    }
+            */
 
+    }
+/*
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+ */
 }

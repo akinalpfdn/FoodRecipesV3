@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application) version "8.2.0"
     alias(libs.plugins.jetbrains.kotlin.android) /*version "1.9.23" */
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -43,7 +44,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     //implementation(libs.gradle)
-    //implementation(libs.google.services)
+    implementation(libs.google.services)
     implementation(libs.material) // Specify version
     implementation(libs.androidx.cardview)           // Specify version
     implementation(libs.androidx.recyclerview)   // Specify version
