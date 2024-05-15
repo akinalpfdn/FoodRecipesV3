@@ -5,13 +5,23 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
 
+    <ImageButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/two_column"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toggleButton"
         android:layout_above="@id/bottomNavigationView"
         android:padding="0dp"
-        android:paddingTop="16dp" />
+        android:paddingTop="0dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
