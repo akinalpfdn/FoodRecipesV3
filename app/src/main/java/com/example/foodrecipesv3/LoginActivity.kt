@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("LoginActivity", "signInWithEmail:success")
                         val user = auth.currentUser
                         Toast.makeText(baseContext, "Login successful.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, HomeActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {

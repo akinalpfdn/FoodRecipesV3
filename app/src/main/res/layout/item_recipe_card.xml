@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/card_background"
+    android:clipToOutline="true"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:padding="0dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/recipeImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="0dp"
+        android:contentDescription="@string/recipe_image"
+        android:padding="0dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/image1"
+        app:shapeAppearanceOverlay="@style/CustomShapeAppearance" />
+
+    <TextView
+        android:id="@+id/recipeTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/recipe_title"
+        android:textColor="@color/text_color_primary"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/recipeInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp"
+        android:text="@string/some_other_info"
+        android:textColor="@color/text_color_secondary"
+        android:textSize="14sp" />
+
+</LinearLayout>

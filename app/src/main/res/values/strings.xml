@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">FoodRecipesV3</string>
+    <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="my_recipes">My Recipes</string>
+    <string name="new_recipe">New Recipe</string>
+    <string name="recipe_title">Recipe Title</string>
+    <string name="some_other_info">Some other info</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="go_to_sign_in">Go to Sign In</string>
+    <string name="go_to_sign_up">Go to Sign Up</string>
+    <string name="emailRegister">Email</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="recipe_image">description</string>
 </resources>
