@@ -1,4 +1,4 @@
-package com.example.foodrecipesv3
+package com.example.foodrecipesv3.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.example.foodrecipesv3.R
 
 data class Recipe(
     val title: String,
@@ -23,7 +24,7 @@ class RecipeAdapter(private val recipeList: List<Recipe>) : RecyclerView.Adapter
         val recipe = recipeList[position]
         holder.titleTextView.text = recipe.title
         holder.descriptionTextView.text = recipe.description
-        holder.viewPager.adapter = ImageSliderAdapter(recipe.imageList)
+        holder.viewPager.adapter = ImageSliderAdapter(holder.itemView.context, recipe.imageList) // Güncellendi
     }
 
     override fun getItemCount(): Int = recipeList.size
@@ -34,3 +35,4 @@ class RecipeAdapter(private val recipeList: List<Recipe>) : RecyclerView.Adapter
         val viewPager: ViewPager2 = itemView.findViewById(R.id.viewPager)
     }
 }
+
