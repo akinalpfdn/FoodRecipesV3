@@ -14,4 +14,11 @@
     <string name="emailRegister">Email</string>
     <string name="sign_up">Sign Up</string>
     <string name="recipe_image">description</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="add_an_ingredient">Add an ingredient</string>
+    <string name="enter_hashtags">Enter hashtags(#chicken #salad #vegan etc.)</string>
+    <string name="enter_detailed_instructions">Enter detailed instructions</string>
+    <string name="add_image">Add Image</string>
+    <string name="add_images_up_to_3">Images (up to 3)</string>
 </resources>

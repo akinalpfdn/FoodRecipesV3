@@ -33,10 +33,10 @@ class WelcomeActivity : AppCompatActivity()  {
         }
         // Butonları bulanıklaştırma
         //applyBlurEffectToButton(goToLoginButton)
-         applyBlurEffectToButton(goToRegisterButton)
+        // applyBlurEffectToButton(goToRegisterButton)
 
     }
-
+/*
     private fun applyBlurEffectToButton(button: Button) {
         button.doOnPreDraw {
             if (button.width > 0 && button.height > 0) {
@@ -54,5 +54,7 @@ class WelcomeActivity : AppCompatActivity()  {
         return bitmap
     }
 
+
+ */
 
 }

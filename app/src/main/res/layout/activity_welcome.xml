@@ -18,15 +18,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:elevation="36dp"
             android:text="@string/go_to_sign_in"
             android:background="@drawable/neumorphism_button"
-            app:rippleColor="#070303" />
+            android:textColor="@color/text_color_primary"
+             />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/goToRegisterButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/text_color_primary"
             android:background="@drawable/neumorphism_button"
             android:text="@string/go_to_sign_up" />
 
