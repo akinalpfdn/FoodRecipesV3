@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_gradient"
     tools:context=".activities.MainActivity">
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,20 +13,21 @@
         android:gravity="center"
         android:padding="16dp">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/goToLoginButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:elevation="36dp"
             android:text="@string/go_to_sign_in"
-            app:backgroundTint="@color/bottom_nav_background"
+            android:background="@drawable/neumorphism_button"
             app:rippleColor="#070303" />
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/goToRegisterButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:backgroundTint="@color/bottom_nav_background"
+            android:background="@drawable/neumorphism_button"
             android:text="@string/go_to_sign_up" />
 
     </LinearLayout>
