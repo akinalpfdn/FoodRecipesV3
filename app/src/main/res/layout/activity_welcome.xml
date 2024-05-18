@@ -31,5 +31,11 @@
             android:background="@drawable/neumorphism_button"
             android:text="@string/go_to_sign_up" />
 
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleSignInButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
     </LinearLayout>
 </RelativeLayout>

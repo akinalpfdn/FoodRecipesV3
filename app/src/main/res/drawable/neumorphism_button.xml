@@ -3,7 +3,7 @@
     <item android:drawable="@drawable/shadow_long" />
     <item>
         <shape android:shape="rectangle" android:padding="10dp">
-            <corners android:radius="20dp" />
+            <corners android:radius="25dp" />
             <gradient
                 android:angle="45"
                 android:endColor="#e28743"

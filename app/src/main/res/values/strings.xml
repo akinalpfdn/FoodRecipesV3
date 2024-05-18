@@ -21,4 +21,6 @@
     <string name="enter_detailed_instructions">Enter detailed instructions</string>
     <string name="add_image">Add Image</string>
     <string name="add_images_up_to_3">Images (up to 3)</string>
+    <string name="default_web_client_id">96062646398-8t1t9mj8bf2v8etjc1mtqta6clkhko5c.apps.googleusercontent.com</string>
+    <string name="delete_image">Delete Image</string>
 </resources>

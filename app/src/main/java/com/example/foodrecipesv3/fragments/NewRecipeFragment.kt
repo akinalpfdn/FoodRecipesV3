@@ -1,6 +1,6 @@
 package com.example.foodrecipesv3.fragments
 
-import AddedImageSliderAdapter
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -15,17 +15,25 @@ import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
+import com.example.foodrecipesv3.adapters.AddedImageSliderAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 
 class NewRecipeFragment : Fragment() {
 
     private val imageUris: MutableList<Uri> = mutableListOf()
-
+    private lateinit var storageReference: StorageReference
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
     companion object {
         private const val REQUEST_CODE_SELECT_IMAGE = 100
     }
@@ -35,7 +43,20 @@ class NewRecipeFragment : Fragment() {
     private lateinit var addIngredientButton: ImageButton
     private lateinit var recipeInstructions: EditText
     private lateinit var addImageButton: Button
-    private lateinit var imageContainer: LinearLayout
+
+    private lateinit var ingredientContainer: LinearLayout
+    private lateinit var charCountText: TextView
+    private lateinit var viewPager: ViewPager2
+    private lateinit var indicatorLayout: LinearLayout
+    private lateinit var saveRecipeButton: ImageButton
+    private lateinit var progressBar: ProgressBar
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        storageReference = FirebaseStorage.getInstance().reference
+        firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,12 +72,14 @@ class NewRecipeFragment : Fragment() {
         recipeTitle = view.findViewById(R.id.recipeTitle)
         recipeHashtags = view.findViewById(R.id.recipeHashtags)
         addIngredientButton = view.findViewById(R.id.addIngredientButton)
-        val ingredientContainer: LinearLayout = view.findViewById(R.id.ingredientContainer)
-        val charCountText: TextView = view.findViewById(R.id.charCountText)
+        ingredientContainer= view.findViewById(R.id.ingredientContainer)
+        charCountText = view.findViewById(R.id.charCountText)
         recipeInstructions = view.findViewById(R.id.recipeInstructions)
         addImageButton = view.findViewById(R.id.addImageButton)
-        val viewPager: ViewPager2 = view.findViewById(R.id.viewPager)
-        val indicatorLayout: LinearLayout = view.findViewById(R.id.indicatorLayout)
+        viewPager = view.findViewById(R.id.viewPager)
+        indicatorLayout = view.findViewById(R.id.indicatorLayout)
+        saveRecipeButton= view.findViewById(R.id.saveRecipeButton)
+        progressBar = view.findViewById(R.id.progressBar)
 
 
 
@@ -81,13 +104,22 @@ class NewRecipeFragment : Fragment() {
             addNewIngredientRow(ingredientContainer)
         }
 
-        viewPager.adapter = AddedImageSliderAdapter(requireContext(), imageUris)
+        // Adapter'ı Ayarlama
+        viewPager.adapter = AddedImageSliderAdapter(requireContext(), imageUris) { position ->
+            imageUris.removeAt(position)
+            viewPager.adapter?.notifyItemRemoved(position)
+            viewPager.adapter?.notifyItemRangeChanged(position, imageUris.size)
+        }
+
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                updateIndicators(position)
             }
         })
+
+        saveRecipeButton.setOnClickListener {
+            saveRecipe(recipeTitle.text.toString(), ingredientContainer, imageUris)
+        }
     }
 
     private fun addNewIngredientRow(container: LinearLayout) {
@@ -149,6 +181,7 @@ class NewRecipeFragment : Fragment() {
         startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
@@ -166,54 +199,80 @@ class NewRecipeFragment : Fragment() {
                     }
                 } else {
                     intentData.data?.let { uri ->
-                        if (imageUris.size >3) {
+                        if (imageUris.size <3) {
                             imageUris.add(uri)
                         } else {
                             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
-                displaySelectedImages()
+                viewPager.adapter?.notifyDataSetChanged()
             }
         }
     }
 
-    private fun displaySelectedImages() {
-        val viewPager: ViewPager2 = view?.findViewById(R.id.viewPager) ?: return
-        viewPager.adapter?.notifyDataSetChanged()
-        setupIndicators(imageUris.size)
-    }
 
-    private fun setupIndicators(count: Int) {
-        val indicatorLayout: LinearLayout = view?.findViewById(R.id.indicatorLayout) ?: return
-        indicatorLayout.removeAllViews()
-        val indicators = arrayOfNulls<ImageView>(count)
-        val layoutParams = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+
+
+    private fun saveRecipe(title: String, ingredientContainer: LinearLayout, imageUris: List<Uri>) {
+        progressBar.visibility = View.VISIBLE // Spinner'ı göster
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            progressBar.visibility = View.GONE // Spinner'ı gizle
+            return
+        }
+
+        val ingredients = mutableListOf<String>()
+        for (i in 0 until ingredientContainer.childCount) {
+            val row = ingredientContainer.getChildAt(i) as LinearLayout
+            val editText = row.getChildAt(0) as EditText
+            ingredients.add(editText.text.toString())
+        }
+
+        val recipe = hashMapOf(
+            "title" to title,
+            "ingredients" to ingredients,
+            "userId" to userId,
+            "images" to mutableListOf<String>()
         )
-        layoutParams.setMargins(8, 0, 8, 0)
-        for (i in indicators.indices) {
-            indicators[i] = ImageView(requireContext()).apply {
-                setImageResource(R.drawable.indicator_inactive_dot)
-                this.layoutParams = layoutParams
-            }
-            indicatorLayout.addView(indicators[i])
-        }
-        if (indicators.isNotEmpty()) {
-            indicators[0]?.setImageResource(R.drawable.indicator_active_dot)
+
+        val recipeRef = firestore.collection("recipes").document()
+        val storageRef = storageReference.child("recipe_images/${recipeRef.id}")
+
+        uploadImages(storageRef, imageUris) { imageUrls ->
+            recipe["images"] = imageUrls
+            recipeRef.set(recipe)
+                .addOnSuccessListener {
+                    Toast.makeText(requireContext(), "Recipe saved successfully", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE // Spinner'ı gizle
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                    progressBar.visibility = View.GONE // Spinner'ı gizle
+                }
         }
     }
 
-    private fun updateIndicators(position: Int) {
-        val indicatorLayout: LinearLayout = view?.findViewById(R.id.indicatorLayout) ?: return
-        for (i in 0 until indicatorLayout.childCount) {
-            val imageView = indicatorLayout.getChildAt(i) as ImageView
-            if (i == position) {
-                imageView.setImageResource(R.drawable.indicator_active_dot)
-            } else {
-                imageView.setImageResource(R.drawable.indicator_inactive_dot)
-            }
+    private fun uploadImages(storageRef: StorageReference, imageUris: List<Uri>, callback: (List<String>) -> Unit) {
+        val imageUrls = mutableListOf<String>()
+        var uploadCount = 0
+
+        for (uri in imageUris) {
+            val imageRef = storageRef.child("${System.currentTimeMillis()}_${uri.lastPathSegment}")
+            imageRef.putFile(uri)
+                .addOnSuccessListener {
+                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
+                        imageUrls.add(downloadUrl.toString())
+                        uploadCount++
+                        if (uploadCount == imageUris.size) {
+                            callback(imageUrls)
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(requireContext(), "Error uploading image: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
         }
     }
 }

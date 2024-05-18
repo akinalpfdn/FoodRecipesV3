@@ -1,150 +1,176 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
-    android:paddingLeft="16dp"
-    android:paddingTop="16dp"
-    android:paddingRight= "16dp">
+    android:background="@drawable/background_gradient">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingTop="16dp"
+        android:paddingRight="16dp">
 
-        <!-- Başlık Girişi -->
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp">
-            <EditText
-                android:id="@+id/recipeTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/recipe_title"
-                android:maxLength="50"
-                android:textColorHint="@color/text_color_primary"
-                android:textColor="@color/text_color_primary"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
-            <TextView
-                android:id="@+id/charCountText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="0/50"
-                android:textColor="@color/text_color_primary"
-                android:paddingEnd="8dp" />
-        </RelativeLayout>
-
-        <!-- Hashtag Girişi -->
-        <EditText
-            android:id="@+id/recipeHashtags"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/enter_hashtags"
-            android:textColor="@color/text_color_primary"
-            android:textColorHint="@color/hint_color"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Malzemeler Bölümü -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/card_background"
-            android:layout_marginBottom="16dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ingredients"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/text_color_secondary"
-                android:layout_marginBottom="8dp" />
-
-            <LinearLayout
-                android:id="@+id/ingredientContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-            <!-- Daha fazla malzeme ekleme butonu -->
-            <ImageButton
-                android:id="@+id/addIngredientButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/small_button"
-                android:src="@drawable/baseline_add_24"
-                android:contentDescription="@string/add_ingredient"
-                android:textColor="@color/text_color_primary"
-                android:textStyle="bold"
-                android:padding="16dp" />
-        </LinearLayout>
-
-        <!-- Detaylı Tarif Girişi -->
-        <EditText
-            android:id="@+id/recipeInstructions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/edit_text_border"
-            android:gravity="top"
-            android:hint="@string/enter_detailed_instructions"
-            android:inputType="textMultiLine"
-            android:minLines="5"
-            android:textColor="@color/text_color_primary"
-            android:textColorHint="@color/hint_color" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_images_up_to_3"
-            android:textSize="18sp"
-            android:textColor="@color/text_color_secondary"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/bottom_nav_text"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp" />
-
-        <!-- Resim Ekleme Bölümü -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Resim ekleme butonu -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addImageButton"
+            <!-- Başlık Girişi -->
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/neumorphism_button"
-                android:text="@string/add_image"
+                android:layout_marginBottom="16dp">
+                <EditText
+                    android:id="@+id/recipeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/recipe_title"
+                    android:maxLength="50"
+                    android:textColorHint="@color/text_color_primary"
+                    android:textColor="@color/text_color_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+                <TextView
+                    android:id="@+id/charCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="0/50"
+                    android:textColor="@color/text_color_primary"
+                    android:paddingEnd="8dp" />
+            </RelativeLayout>
+
+            <!-- Hashtag Girişi -->
+            <EditText
+                android:id="@+id/recipeHashtags"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="16dp"
+                android:hint="@string/enter_hashtags"
                 android:textColor="@color/text_color_primary"
-                android:layout_marginBottom="8dp" />
+                android:textColorHint="@color/hint_color" />
 
-            <!-- Image Slider -->;
-            <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginBottom="0dp" />;
-
+            <!-- Malzemeler Bölümü -->
             <LinearLayout
-                android:id="@+id/indicatorLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="-16dp"
+                android:orientation="vertical"
+                android:background="@drawable/card_background"
+                android:elevation="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ingredients"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:textColor="@color/text_color_secondary"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:id="@+id/ingredientContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <!-- Daha fazla malzeme ekleme butonu -->
+                <ImageButton
+                    android:id="@+id/addIngredientButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/small_button"
+                    android:src="@drawable/baseline_add_24"
+                    android:contentDescription="@string/add_ingredient"
+                    android:textColor="@color/text_color_primary"
+                    android:textStyle="bold"
+                    android:padding="16dp" />
+            </LinearLayout>
+
+            <!-- Detaylı Tarif Girişi -->
+            <EditText
+                android:id="@+id/recipeInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/edit_text_border"
+                android:gravity="top"
+                android:hint="@string/enter_detailed_instructions"
+                android:inputType="textMultiLine"
+                android:minLines="5"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_images_up_to_3"
+                android:textSize="18sp"
+                android:textColor="@color/text_color_secondary"
+                android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
-            </LinearLayout>;
-    </LinearLayout>
-</ScrollView>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:background="@color/bottom_nav_text"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Resim Ekleme Bölümü -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Resim ekleme butonu -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addImageButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/neumorphism_button"
+                    android:text="@string/add_image"
+                    android:textColor="@color/text_color_primary" />
+
+                <!-- Image Slider -->
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="0dp" />
+
+                <LinearLayout
+                    android:id="@+id/indicatorLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginBottom="8dp" />
+                <ImageButton
+                    android:id="@+id/saveRecipeButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/small_button"
+                    android:src="@drawable/baseline_save_24"
+                    android:contentDescription="@string/add_ingredient"
+                    android:textColor="@color/text_color_primary"
+                    android:textStyle="bold"
+                    android:padding="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+</RelativeLayout>
