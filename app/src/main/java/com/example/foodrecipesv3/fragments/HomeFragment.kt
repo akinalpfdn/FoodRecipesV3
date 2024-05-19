@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodrecipesv3.R
-import com.example.foodrecipesv3.adapters.Recipe
+import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 
 class HomeFragment : Fragment() {
@@ -32,14 +32,11 @@ class HomeFragment : Fragment() {
 
         // RecyclerView setup
         val recipeList = listOf(
-            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1, R.drawable.image2)),
-            Recipe("Neurth Ihinige", "Cook time: 20 mins", listOf(R.drawable.image2, R.drawable.image3)),
-            Recipe("My Poffielt. Mcke", "Description for My Poffielt. Mcke", listOf(R.drawable.image3, R.drawable.image2)),
-            Recipe("My Preylfe", "Short description", listOf(R.drawable.image4, R.drawable.image2)),
-            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1, R.drawable.image2)),
-            Recipe("Neurth Ihinige", "Cook time: 20 mins", listOf(R.drawable.image2, R.drawable.image3)),
-            Recipe("My Poffielt. Mcke", "Description for My Poffielt. Mcke", listOf(R.drawable.image3, R.drawable.image2)),
-            Recipe("My Preylfe", "Short description", listOf(R.drawable.image4, R.drawable.image2))
+            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1.toString(), R.drawable.image2.toString())),
+            Recipe("Neurth Ihinige", "Cook time: 20 mins", listOf(R.drawable.image2.toString(), R.drawable.image3.toString())),
+            Recipe("My Poffielt. Mcke", "Description for My Poffielt. Mcke", listOf(R.drawable.image3.toString(), R.drawable.image2.toString())),
+            Recipe("My Preylfe", "Short description", listOf(R.drawable.image4.toString(), R.drawable.image2.toString())),
+            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1.toString(), R.drawable.image2.toString())),
         )
 
         recipeAdapter = RecipeAdapter(recipeList)

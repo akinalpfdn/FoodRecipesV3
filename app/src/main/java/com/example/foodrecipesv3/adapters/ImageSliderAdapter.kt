@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodrecipesv3.R
 
-class ImageSliderAdapter(private val context: Context, private val imageList: List<Int>) :
+class ImageSliderAdapter(private val context: Context, private val imageList: List<String>) :
     RecyclerView.Adapter<ImageSliderAdapter.SliderViewHolder>() {
 
     private var currentPosition = 0
@@ -21,7 +21,9 @@ class ImageSliderAdapter(private val context: Context, private val imageList: Li
     }
 
     override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
-        holder.imageView.setImageResource(imageList[position])
+        Glide.with(context)
+            .load(imageList[position])
+            .into(holder.imageView)
 
         // Indicator noktalarını ekleme
         if (holder.linearLayout.childCount == 0) {

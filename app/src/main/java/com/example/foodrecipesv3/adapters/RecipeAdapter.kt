@@ -7,13 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
+import com.example.foodrecipesv3.models.Recipe
 
-data class Recipe(
-    val title: String,
-    val description: String,
-    val imageList: List<Int> // Birden fazla resim için
-)
-class RecipeAdapter(private val recipeList: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
+class RecipeAdapter(private var recipeList: List<Recipe>) : RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_recipe_card, parent, false)
@@ -24,10 +20,15 @@ class RecipeAdapter(private val recipeList: List<Recipe>) : RecyclerView.Adapter
         val recipe = recipeList[position]
         holder.titleTextView.text = recipe.title
         holder.descriptionTextView.text = recipe.description
-        holder.viewPager.adapter = ImageSliderAdapter(holder.itemView.context, recipe.imageList) // Güncellendi
+        holder.viewPager.adapter = ImageSliderAdapter(holder.itemView.context, recipe.images)
     }
 
     override fun getItemCount(): Int = recipeList.size
+
+    fun updateRecipes(newRecipes: List<Recipe>) {
+        recipeList = newRecipes
+        notifyDataSetChanged()
+    }
 
     inner class RecipeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleTextView: TextView = itemView.findViewById(R.id.recipeTitle)
@@ -35,4 +36,3 @@ class RecipeAdapter(private val recipeList: List<Recipe>) : RecyclerView.Adapter
         val viewPager: ViewPager2 = itemView.findViewById(R.id.viewPager)
     }
 }
-

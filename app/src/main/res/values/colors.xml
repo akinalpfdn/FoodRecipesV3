@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="background_color">#f9f6ea</color>
+    <color name="background_color_start">#FBF3D5</color>
+    <color name="background_color_end">#EFBC9B</color>
     <color name="card_background">#FAE5CF</color>
     <color name="text_color_primary">#333333</color>
     <color name="text_color_secondary">#FFC09474</color>
@@ -11,4 +13,9 @@
     <color name="bottom_nav_text">#c09474</color>
     <color name="button_color">#2C4E80</color>
     <color name="hint_color">#7C7C7C</color>
+    <color name="button_start">#494458</color>
+    <color name="button_end">#494458</color>
+    <color name="colorPrimary">#494458</color>
+    <color name="colorPrimaryDark">#494458</color>
+    <color name="colorAccent">#FF4081</color>
 </resources>

@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
@@ -24,8 +25,14 @@
                     android:id="@+id/recipeTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:autofillHints="Title"
                     android:hint="@string/recipe_title"
+                    android:background="@drawable/card_background"
+                    android:elevation="5dp"
+                    android:inputType="text"
                     android:maxLength="50"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
                     android:textColorHint="@color/text_color_primary"
                     android:textColor="@color/text_color_primary"
                     android:textSize="20sp"
@@ -37,20 +44,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:text="0/50"
+                    android:text="@string/title_char_limit"
                     android:textColor="@color/text_color_primary"
-                    android:paddingEnd="8dp" />
+                    android:paddingEnd="8dp"
+                    tools:ignore="RelativeOverlap,RtlSymmetry" />
             </RelativeLayout>
-
-            <!-- Hashtag Girişi -->
-            <EditText
-                android:id="@+id/recipeHashtags"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginBottom="16dp"
-                android:hint="@string/enter_hashtags"
-                android:textColor="@color/text_color_primary"
-                android:textColorHint="@color/hint_color" />
 
             <!-- Malzemeler Bölümü -->
             <LinearLayout
@@ -64,13 +62,15 @@
                 android:layout_marginBottom="16dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
                     android:text="@string/ingredients"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
                     android:textColor="@color/text_color_secondary"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/ingredientContainer"
@@ -81,8 +81,9 @@
                 <!-- Daha fazla malzeme ekleme butonu -->
                 <ImageButton
                     android:id="@+id/addIngredientButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:background="@drawable/small_button"
                     android:src="@drawable/baseline_add_24"
                     android:contentDescription="@string/add_ingredient"
@@ -97,14 +98,35 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:background="@drawable/edit_text_border"
+                android:autofillHints="recipe"
+                android:background="@drawable/card_background"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:gravity="top"
+                android:elevation="5dp"
                 android:hint="@string/enter_detailed_instructions"
                 android:inputType="textMultiLine"
                 android:minLines="5"
                 android:textColor="@color/text_color_primary"
                 android:textColorHint="@color/hint_color" />
 
+
+            <!-- Hashtag Girişi -->
+            <EditText
+                android:id="@+id/recipeHashtags"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="hashtags"
+                android:inputType="text"
+                android:textCursorDrawable = "@null"
+                android:background="@drawable/card_background"
+                android:elevation="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="@string/enter_hashtags"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -124,17 +146,18 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <!-- Resim ekleme butonu -->
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/addImageButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="55dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/neumorphism_button"
                     android:text="@string/add_image"
-                    android:textColor="@color/text_color_primary" />
+                    android:textColor="@color/bottom_nav_text" />
 
                 <!-- Image Slider -->
                 <androidx.viewpager2.widget.ViewPager2

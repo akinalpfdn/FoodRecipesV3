@@ -6,8 +6,8 @@
             <corners android:radius="20dp" />
             <gradient
                 android:angle="45"
-                android:endColor="#e28743"
-                android:startColor="#E8C198"
+                android:endColor="@color/button_end"
+                android:startColor="@color/button_start"
                 android:type="linear" />
             <padding
                 android:bottom="0dp"

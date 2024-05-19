@@ -2,6 +2,7 @@ package com.example.foodrecipesv3.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -118,10 +119,19 @@ class NewRecipeFragment : Fragment() {
         })
 
         saveRecipeButton.setOnClickListener {
-            saveRecipe(recipeTitle.text.toString(), ingredientContainer, imageUris)
+            showConfirmationDialog()
         }
     }
-
+    private fun showConfirmationDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Confirmation")
+            .setMessage("Are you sure you want to save this recipe?")
+            .setPositiveButton("Yes") { dialog, which ->
+                saveRecipe(recipeTitle.text.toString(),recipeHashtags.text.toString(),recipeInstructions.text.toString(), ingredientContainer, imageUris)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
     private fun addNewIngredientRow(container: LinearLayout) {
         val newRow = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -214,7 +224,7 @@ class NewRecipeFragment : Fragment() {
 
 
 
-    private fun saveRecipe(title: String, ingredientContainer: LinearLayout, imageUris: List<Uri>) {
+    private fun saveRecipe(title: String, hashtags: String,description: String,ingredientContainer: LinearLayout, imageUris: List<Uri>) {
         progressBar.visibility = View.VISIBLE // Spinner'ı göster
         val userId = auth.currentUser?.uid
         if (userId == null) {
@@ -233,6 +243,8 @@ class NewRecipeFragment : Fragment() {
         val recipe = hashMapOf(
             "title" to title,
             "ingredients" to ingredients,
+            "description" to description,
+            "hashtags" to hashtags,
             "userId" to userId,
             "images" to mutableListOf<String>()
         )

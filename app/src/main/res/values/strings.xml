@@ -23,4 +23,7 @@
     <string name="add_images_up_to_3">Images (up to 3)</string>
     <string name="default_web_client_id">96062646398-8t1t9mj8bf2v8etjc1mtqta6clkhko5c.apps.googleusercontent.com</string>
     <string name="delete_image">Delete Image</string>
+    <string name="title_char_limit">0/50</string>
+    <string name="toogle_grid_view">Toogle Grid View</string>
+    <string name="logout">Logout</string>
 </resources>
