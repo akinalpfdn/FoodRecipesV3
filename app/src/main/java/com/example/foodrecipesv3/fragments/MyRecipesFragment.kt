@@ -73,6 +73,7 @@ class MyRecipesFragment : Fragment() {
                     val recipes = mutableListOf<Recipe>()
                     for (document in documents) {
                         val recipe = document.toObject(Recipe::class.java)
+                        recipe.id = document.id // Set the document ID
                         recipes.add(recipe)
                     }
                     recipeAdapter.updateRecipes(recipes)
@@ -81,5 +82,10 @@ class MyRecipesFragment : Fragment() {
                     // Handle the error
                 }
         }
+    }
+
+    private fun openUpdateRecipeFragment(recipeId: String) {
+        val fragment = UpdateRecipeDialogFragment.newInstance(recipeId)
+        fragment.show(parentFragmentManager, "UpdateRecipeDialogFragment")
     }
 }

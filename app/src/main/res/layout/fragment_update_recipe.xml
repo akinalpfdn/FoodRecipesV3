@@ -1,0 +1,214 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/modal_background"
+    android:id="@+id/updateRecipe">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="644dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp"
+        android:paddingRight="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Başlık Girişi -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/recipeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="16dp"
+                    android:autofillHints="Title"
+                    android:background="@drawable/card_background"
+                    android:elevation="5dp"
+                    android:hint="@string/recipe_title"
+                    android:inputType="text"
+                    android:maxLength="50"
+                    android:textColor="@color/text_color_primary"
+                    android:textColorHint="@color/text_color_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/charCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingEnd="8dp"
+                    android:text="@string/title_char_limit"
+                    android:textColor="@color/text_color_primary"
+                    tools:ignore="RelativeOverlap,RtlSymmetry" />
+            </RelativeLayout>
+
+            <!-- Malzemeler Bölümü -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/card_background"
+                android:elevation="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:text="@string/ingredients"
+                    android:textColor="@color/text_color_secondary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/ingredientContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <!-- Daha fazla malzeme ekleme butonu -->
+                <ImageButton
+                    android:id="@+id/addIngredientButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/small_button"
+                    android:contentDescription="@string/add_ingredient"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:src="@drawable/baseline_add_24"
+                    android:textColor="@color/text_color_primary"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Detaylı Tarif Girişi -->
+            <EditText
+                android:id="@+id/recipeInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="recipe"
+                android:background="@drawable/card_background"
+                android:elevation="5dp"
+                android:gravity="top"
+                android:hint="@string/enter_detailed_instructions"
+                android:inputType="textMultiLine"
+                android:minLines="5"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color" />
+
+
+            <!-- Hashtag Girişi -->
+            <EditText
+                android:id="@+id/recipeHashtags"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="hashtags"
+                android:background="@drawable/card_background"
+                android:elevation="5dp"
+                android:hint="@string/enter_hashtags"
+                android:inputType="text"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color"
+                android:textCursorDrawable="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="@string/add_images_up_to_3"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/bottom_nav_text" />
+
+            <!-- Resim Ekleme Bölümü -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <!-- Resim ekleme butonu -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/addImageButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/neumorphism_button"
+                    android:text="@string/add_image"
+                    android:textColor="@color/bottom_nav_text" />
+
+                <!-- Image Slider -->
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="0dp" />
+
+                <LinearLayout
+                    android:id="@+id/indicatorLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bottom_nav_background"
+        android:paddingTop="10dp">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/cancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/neumorphism_button"
+            android:text="@string/cancel"
+            android:textColor="@color/bottom_nav_text" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/neumorphism_button"
+            android:text="@string/save"
+            android:textColor="@color/bottom_nav_text"  />
+    </LinearLayout>
+</RelativeLayout>

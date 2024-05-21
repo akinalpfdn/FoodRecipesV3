@@ -10,11 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.foodrecipesv3.R
-import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.adapters.RecipeAdapter
+import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class HomeFragment : Fragment() {
 
@@ -23,9 +26,13 @@ class HomeFragment : Fragment() {
     private lateinit var toggleButton: ImageButton
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
-    private   var progressBar: ProgressBar? = null
+    private var progressBar: ProgressBar? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
-    private var isGridLayout = true
+    private var isGridLayout = false
+    private var lastVisible: DocumentSnapshot? = null
+    private val pageSize = 20
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,8 +45,14 @@ class HomeFragment : Fragment() {
             toggleLayout()
         }
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            fetchRecipes(true)
+        }
+
         return view
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -50,30 +63,66 @@ class HomeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recipeAdapter = RecipeAdapter(mutableListOf())
         recyclerView.adapter = recipeAdapter
+
         progressBar = activity?.findViewById(R.id.progressBar)
-        progressBar?.visibility = View.VISIBLE // Spinner'ı göster
-        fetchFlowRecipes()
-        progressBar?.visibility = View.GONE // Spinner'ı gizle
+
+        fetchRecipes(true)
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + 5)) {
+                    fetchRecipes(false)
+                }
+            }
+        })
     }
-    private fun fetchFlowRecipes() {
-        val userId = auth.currentUser?.uid
-        if (userId != null) {
-            firestore.collection("recipes")
-                .whereNotEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener { documents ->
+
+    private fun fetchRecipes(initialLoad: Boolean) {
+        if (isLoading) return
+        isLoading = true
+
+        progressBar?.visibility = View.VISIBLE
+
+        var query: Query = firestore.collection("recipes")
+            .orderBy("timestamp")
+            .limit(pageSize.toLong())
+
+        if (lastVisible != null && !initialLoad) {
+            query = query.startAfter(lastVisible!!)
+        }
+
+        query.get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() > 0) {
+                    lastVisible = documents.documents[documents.size() - 1]
                     val recipes = mutableListOf<Recipe>()
                     for (document in documents) {
                         val recipe = document.toObject(Recipe::class.java)
                         recipes.add(recipe)
                     }
-                    recipeAdapter.updateRecipes(recipes)
+                    if (initialLoad) {
+                        recipeAdapter.updateRecipes(recipes)
+                    } else {
+                        recipeAdapter.addRecipes(recipes)
+                    }
                 }
-                .addOnFailureListener { exception ->
-                    // Handle the error
-                }
-        }
+                isLoading = false
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+                isLoading = false
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
+            }
     }
+
     private fun toggleLayout() {
         isGridLayout = !isGridLayout
         if (isGridLayout) {

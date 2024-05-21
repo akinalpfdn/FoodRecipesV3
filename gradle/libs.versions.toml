@@ -23,6 +23,7 @@ firebaseAnalyticsKtx = "22.0.0"
 firebaseAuthKtx = "23.0.0"
 firebaseFirestoreKtx = "25.0.0"
 viewpager2 = "1.1.0"
+swiperefreshlayout = "1.1.0"
 
 
 [libraries]
@@ -49,6 +50,7 @@ firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx", version.
 firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 firebase-storage = { module = "com.google.firebase:firebase-storage", version.ref = "firebaseStorage" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 
 

@@ -16,24 +16,23 @@ import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
 import com.example.foodrecipesv3.fragments.NewRecipeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        //duplicateDocuments(25)
 
         // Set up the toolbar
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.getOverflowIcon()
             ?.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
-        //setu up popup
-       // val popupMenu = PopupMenu(toolbar.context, toolbar)
-       // popupMenu.inflate(R.menu.main_menu)
-       // toolbar.popupTheme = R.style.CustomPopupMenu
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -63,6 +62,39 @@ class MainActivity : AppCompatActivity() {
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
     }
+// burası test amaclıdır daha sonra silinecektir
+    fun duplicateDocuments(times: Int) {
+        val firestore = FirebaseFirestore.getInstance()
+        val collectionRef = firestore.collection("recipes")
+
+        collectionRef.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val data = document.data.toMutableMap()
+
+                    for (i in 1..times) {
+                        // Ensure the duplicated document has a timestamp
+                        data["timestamp"] = Timestamp.now()
+
+                        // Modify the title to indicate it's a duplicate for testing purposes
+                        data["title"] = "${data["title"]} - Copy $i"
+
+                        // Add the duplicated document to the collection
+                        collectionRef.add(data)
+                            .addOnSuccessListener { newDocumentRef ->
+                                println("Document duplicated with ID: ${newDocumentRef.id}")
+                            }
+                            .addOnFailureListener { e ->
+                                println("Error duplicating document: $e")
+                            }
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                println("Error fetching documents: $e")
+            }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -88,30 +120,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val menuBackground = ContextCompat.getColor(this, R.color.bottom_nav_background)
-        val menuTextColor = ContextCompat.getColor(this, R.color.white)
-
-        for (i in 0 until (menu?.size() ?: 0)) {
-            val menuItem = menu?.getItem(i)
-            val spanString = android.text.SpannableString(menuItem?.title)
-            spanString.setSpan(
-                android.text.style.ForegroundColorSpan(menuTextColor),
-                0,
-                spanString.length,
-                0
-            )
-            menuItem?.title = spanString
-
-            val drawable = menuItem?.icon
-            drawable?.mutate()
-            drawable?.setColorFilter(menuTextColor, PorterDuff.Mode.SRC_ATOP)
-        }
-
-        return super.onPrepareOptionsMenu(menu)
-    }
     private fun logout() {
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, WelcomeActivity::class.java)

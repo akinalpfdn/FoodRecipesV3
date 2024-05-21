@@ -26,4 +26,6 @@
     <string name="title_char_limit">0/50</string>
     <string name="toogle_grid_view">Toogle Grid View</string>
     <string name="logout">Logout</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
 </resources>

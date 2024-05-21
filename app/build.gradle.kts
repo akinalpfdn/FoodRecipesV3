@@ -60,6 +60,7 @@ dependencies {
 
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
+    implementation(libs.androidx.swiperefreshlayout)
     annotationProcessor(libs.compiler)
 
     implementation (libs.play.services.auth)
