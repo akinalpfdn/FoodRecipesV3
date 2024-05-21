@@ -68,6 +68,28 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                logout()
+                true
+            }
+            R.id.menu_light_mode -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                true
+            }
+            R.id.menu_dark_mode -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+
+
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val menuBackground = ContextCompat.getColor(this, R.color.bottom_nav_background)
         val menuTextColor = ContextCompat.getColor(this, R.color.white)
@@ -90,27 +112,6 @@ class MainActivity : AppCompatActivity() {
 
         return super.onPrepareOptionsMenu(menu)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-
-        return when (item.itemId) {
-            R.id.action_logout -> {
-                logout()
-                true
-            }
-            R.id.menu_light_mode -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                true
-            }
-            R.id.menu_dark_mode -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun logout() {
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(this, WelcomeActivity::class.java)
