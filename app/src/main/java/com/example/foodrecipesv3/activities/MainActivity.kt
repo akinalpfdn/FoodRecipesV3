@@ -9,6 +9,7 @@ import android.widget.PopupMenu
 import com.example.foodrecipesv3.R
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
@@ -30,9 +31,9 @@ class MainActivity : AppCompatActivity() {
         toolbar.getOverflowIcon()
             ?.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
         //setu up popup
-        val popupMenu = PopupMenu(toolbar.context, toolbar)
-        popupMenu.inflate(R.menu.main_menu)
-        toolbar.popupTheme = R.style.CustomPopupMenu
+       // val popupMenu = PopupMenu(toolbar.context, toolbar)
+       // popupMenu.inflate(R.menu.main_menu)
+       // toolbar.popupTheme = R.style.CustomPopupMenu
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
@@ -66,6 +67,30 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val menuBackground = ContextCompat.getColor(this, R.color.bottom_nav_background)
+        val menuTextColor = ContextCompat.getColor(this, R.color.white)
+
+        for (i in 0 until (menu?.size() ?: 0)) {
+            val menuItem = menu?.getItem(i)
+            val spanString = android.text.SpannableString(menuItem?.title)
+            spanString.setSpan(
+                android.text.style.ForegroundColorSpan(menuTextColor),
+                0,
+                spanString.length,
+                0
+            )
+            menuItem?.title = spanString
+
+            val drawable = menuItem?.icon
+            drawable?.mutate()
+            drawable?.setColorFilter(menuTextColor, PorterDuff.Mode.SRC_ATOP)
+        }
+
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
 

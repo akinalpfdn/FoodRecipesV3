@@ -16,7 +16,7 @@
     <color name="button_start">#494458</color>
     <color name="button_end">#494458</color>
     <color name="colorPrimary">#BF1212</color>
-    <color name="colorPrimaryDark">#202020</color>
+    <color name="colorPrimaryDark">#202020</color><!--toolbar buton rengini degistiriyor-->
     <color name="colorAccent">#FFEB3B</color>
     <color name="your_desired_color">#673AB7</color>
 </resources>

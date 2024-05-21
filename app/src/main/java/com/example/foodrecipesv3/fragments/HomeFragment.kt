@@ -34,7 +34,9 @@ class HomeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
         toggleButton = view.findViewById(R.id.toggleButton)
-
+        toggleButton.setOnClickListener {
+            toggleLayout()
+        }
 
         return view
     }

@@ -5,16 +5,16 @@
     android:layout_height="match_parent"
     android:background="@color/background_color">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/bottom_nav_background"
-        app:titleTextColor="@color/button_end"
         android:fitsSystemWindows="true"
-        android:theme="@style/MyToolbarStyle"
-        android:elevation="8dp"
-        app:popupTheme="@style/CustomPopupMenu"/>
+        app:titleTextColor="@color/button_end"
+        app:theme="@style/MyToolbarStyle"
+        app:popupTheme="@style/CustomPopupMenu"
+        android:elevation="8dp" />
 
     <FrameLayout
         android:id="@+id/nav_host_fragment"
