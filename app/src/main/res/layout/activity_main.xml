@@ -9,7 +9,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        android:background="@color/bottom_nav_background"
+        app:titleTextColor="@color/button_end"
+        android:fitsSystemWindows="true"
+        android:theme="@style/MyToolbarStyle"
+        android:elevation="8dp"
+        app:popupTheme="@style/CustomPopupMenu"/>
 
     <FrameLayout
         android:id="@+id/nav_host_fragment"
@@ -29,4 +34,11 @@
         app:itemTextColor="@color/bottom_nav_text"
         app:labelVisibilityMode="labeled" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 </RelativeLayout>

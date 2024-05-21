@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
 class WelcomeActivity : AppCompatActivity()  {
@@ -52,9 +53,9 @@ class WelcomeActivity : AppCompatActivity()  {
         }
 
         // Check if the user is already signed in
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        if (account != null) {
-            // User is already signed in, navigate to MainActivity
+        val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            // User is signed in either by Google or email
             navigateToMainActivity()
         }
 

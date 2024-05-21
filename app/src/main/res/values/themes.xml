@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.FoodRecipesV3" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Base.Theme.FoodRecipesV3" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorSurface">@color/your_desired_color</item>
+        <item name="colorOnSurface">@color/button_color</item>
     </style>
 
     <style name="Theme.FoodRecipesV3" parent="Base.Theme.FoodRecipesV3" />

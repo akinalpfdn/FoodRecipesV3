@@ -2,14 +2,15 @@
     <!-- Base application theme -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary theme colors -->
-        <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
-        <item name="colorOnPrimary">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/bottom_nav_background</item>
-        <item name="colorAccent">@color/button_color</item>
+        <item name="colorOnPrimary">@android:color/black</item>
         <item name="colorControlNormal">@android:color/black</item>
         <item name="colorControlActivated">@android:color/black</item>
         <item name="colorControlHighlight">@android:color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="colorPrimary">@color/bottom_nav_background</item>
+        <item name="colorPrimaryDark">@color/bottom_nav_background</item>
+        <item name="colorAccent">@color/bottom_nav_background</item>
     </style>
     <style name="CustomShapeAppearance" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamily">rounded</item>
@@ -23,5 +24,16 @@
         <item name="android:padding">10dp</item>
         <!-- Add other styling properties if needed -->
     </style>
+    <style name="MyToolbarStyle" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorSecondary">#000000</item>
+    </style>
+    <!-- Other styles ... -->
+
+    <!-- Custom overflow menu style -->
+    <style name="CustomPopupMenu" parent="Widget.Material3.PopupMenu">
+        <item name="android:colorBackground">@color/bottom_nav_background</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

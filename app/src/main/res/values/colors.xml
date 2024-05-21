@@ -15,7 +15,8 @@
     <color name="hint_color">#7C7C7C</color>
     <color name="button_start">#494458</color>
     <color name="button_end">#494458</color>
-    <color name="colorPrimary">#494458</color>
-    <color name="colorPrimaryDark">#494458</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#BF1212</color>
+    <color name="colorPrimaryDark">#202020</color>
+    <color name="colorAccent">#FFEB3B</color>
+    <color name="your_desired_color">#673AB7</color>
 </resources>

@@ -50,7 +50,7 @@ class NewRecipeFragment : Fragment() {
     private lateinit var viewPager: ViewPager2
     private lateinit var indicatorLayout: LinearLayout
     private lateinit var saveRecipeButton: ImageButton
-    private lateinit var progressBar: ProgressBar
+    private   var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +80,7 @@ class NewRecipeFragment : Fragment() {
         viewPager = view.findViewById(R.id.viewPager)
         indicatorLayout = view.findViewById(R.id.indicatorLayout)
         saveRecipeButton= view.findViewById(R.id.saveRecipeButton)
-        progressBar = view.findViewById(R.id.progressBar)
+        progressBar = activity?.findViewById(R.id.progressBar)
 
 
 
@@ -225,11 +225,11 @@ class NewRecipeFragment : Fragment() {
 
 
     private fun saveRecipe(title: String, hashtags: String,description: String,ingredientContainer: LinearLayout, imageUris: List<Uri>) {
-        progressBar.visibility = View.VISIBLE // Spinner'ı göster
+        progressBar?.visibility = View.VISIBLE // Spinner'ı göster
         val userId = auth.currentUser?.uid
         if (userId == null) {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-            progressBar.visibility = View.GONE // Spinner'ı gizle
+            progressBar?.visibility = View.GONE // Spinner'ı gizle
             return
         }
 
@@ -257,11 +257,11 @@ class NewRecipeFragment : Fragment() {
             recipeRef.set(recipe)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), "Recipe saved successfully", Toast.LENGTH_SHORT).show()
-                    progressBar.visibility = View.GONE // Spinner'ı gizle
+                    progressBar?.visibility = View.GONE // Spinner'ı gizle
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
-                    progressBar.visibility = View.GONE // Spinner'ı gizle
+                    progressBar?.visibility = View.GONE // Spinner'ı gizle
                 }
         }
     }

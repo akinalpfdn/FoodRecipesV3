@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,12 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.adapters.RecipeAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
 
     private lateinit var recipeAdapter: RecipeAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var toggleButton: ImageButton
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private   var progressBar: ProgressBar? = null
 
     private var isGridLayout = true
 
@@ -27,29 +33,45 @@ class HomeFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        recyclerView = view.findViewById(R.id.recyclerView)
         toggleButton = view.findViewById(R.id.toggleButton)
 
-        // RecyclerView setup
-        val recipeList = listOf(
-            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1.toString(), R.drawable.image2.toString())),
-            Recipe("Neurth Ihinige", "Cook time: 20 mins", listOf(R.drawable.image2.toString(), R.drawable.image3.toString())),
-            Recipe("My Poffielt. Mcke", "Description for My Poffielt. Mcke", listOf(R.drawable.image3.toString(), R.drawable.image2.toString())),
-            Recipe("My Preylfe", "Short description", listOf(R.drawable.image4.toString(), R.drawable.image2.toString())),
-            Recipe("My Recipes", "Description for My Recipes", listOf(R.drawable.image1.toString(), R.drawable.image2.toString())),
-        )
-
-        recipeAdapter = RecipeAdapter(recipeList)
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
-        recyclerView.adapter = recipeAdapter
-
-        toggleButton.setOnClickListener {
-            toggleLayout()
-        }
 
         return view
     }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
+
+        recyclerView = view.findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recipeAdapter = RecipeAdapter(mutableListOf())
+        recyclerView.adapter = recipeAdapter
+        progressBar = activity?.findViewById(R.id.progressBar)
+        progressBar?.visibility = View.VISIBLE // Spinner'ı göster
+        fetchFlowRecipes()
+        progressBar?.visibility = View.GONE // Spinner'ı gizle
+    }
+    private fun fetchFlowRecipes() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("recipes")
+                .whereNotEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener { documents ->
+                    val recipes = mutableListOf<Recipe>()
+                    for (document in documents) {
+                        val recipe = document.toObject(Recipe::class.java)
+                        recipes.add(recipe)
+                    }
+                    recipeAdapter.updateRecipes(recipes)
+                }
+                .addOnFailureListener { exception ->
+                    // Handle the error
+                }
+        }
+    }
     private fun toggleLayout() {
         isGridLayout = !isGridLayout
         if (isGridLayout) {
