@@ -23,7 +23,7 @@ class MyRecipesFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var toggleButton: ImageButton
-    private var isGridLayout = true
+    private var isGridLayout = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

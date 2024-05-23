@@ -8,9 +8,11 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
@@ -190,7 +192,21 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         newRow.addView(deleteButton)
         container.addView(newRow)
     }
-
+    //tariflerim kısmında açılan modalın boyutlarını belirleme
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        if (dialog != null) {
+            val width = WindowManager.LayoutParams.MATCH_PARENT
+            val displayMetrics = DisplayMetrics()
+            val display = context?.display
+            display?.getRealMetrics(displayMetrics)
+            val height = (displayMetrics.heightPixels * 0.7).toInt()
+            dialog.window?.setLayout(width, height)
+            //aşağıdaki kod corner verince çıkan siyah sivri çıkıntıları engellemek için
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+    }
     private fun addNewIngredientRow(container: LinearLayout) {
         val newRow = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
