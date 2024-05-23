@@ -27,6 +27,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
 
+                <TextView
+                    android:id="@+id/charCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:paddingEnd="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/title_char_limit"
+                    android:textColor="@color/text_color_primary"
+                    tools:ignore="RelativeOverlap,RtlSymmetry" />
                 <EditText
                     android:id="@+id/recipeTitle"
                     android:layout_width="match_parent"
@@ -45,16 +56,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/charCountText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:paddingEnd="8dp"
-                    android:text="@string/title_char_limit"
-                    android:textColor="@color/text_color_primary"
-                    tools:ignore="RelativeOverlap,RtlSymmetry" />
             </RelativeLayout>
 
             <!-- Malzemeler Bölümü -->
@@ -216,4 +217,11 @@
             android:text="@string/save"
             android:textColor="@color/bottom_nav_text"  />
     </LinearLayout>
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 </RelativeLayout>

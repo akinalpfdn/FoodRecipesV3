@@ -21,6 +21,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp">
+                <TextView
+                    android:id="@+id/charCountText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/title_char_limit"
+                    android:textColor="@color/black"
+                    android:paddingEnd="8dp"
+                    tools:ignore="RelativeOverlap,RtlSymmetry" />
                 <EditText
                     android:id="@+id/recipeTitle"
                     android:layout_width="match_parent"
@@ -38,16 +48,6 @@
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginBottom="16dp" />
-                <TextView
-                    android:id="@+id/charCountText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/title_char_limit"
-                    android:textColor="@color/text_color_primary"
-                    android:paddingEnd="8dp"
-                    tools:ignore="RelativeOverlap,RtlSymmetry" />
             </RelativeLayout>
 
             <!-- Malzemeler Bölümü -->

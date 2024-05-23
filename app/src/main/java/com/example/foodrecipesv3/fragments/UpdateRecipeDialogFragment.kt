@@ -3,12 +3,16 @@ package com.example.foodrecipesv3.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,6 +67,9 @@ class UpdateRecipeDialogFragment : DialogFragment() {
     private lateinit var saveRecipeButton: Button
     private lateinit var cancelButton: Button
     private var progressBar: ProgressBar? = null
+    private lateinit var windowManager: WindowManager
+    private lateinit var overlayProgressBar: ProgressBar
+    private var isOverlayAdded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,8 +78,24 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         auth = FirebaseAuth.getInstance()
 
         recipeId = arguments?.getString(ARG_RECIPE_ID) ?: throw IllegalArgumentException("Recipe ID must be passed to UpdateRecipeDialogFragment")
-    }
 
+
+
+
+    }
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        if (dialog != null) {
+            val displayMetrics = DisplayMetrics()
+            val display = activity?.windowManager?.defaultDisplay
+            display?.getMetrics(displayMetrics)
+            val height = (displayMetrics.heightPixels * 0.7).toInt()
+            val width = (displayMetrics.widthPixels * 0.9).toInt()
+            dialog.window?.setLayout(width, height)
+            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +117,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         indicatorLayout = view.findViewById(R.id.indicatorLayout)
         saveRecipeButton = view.findViewById(R.id.saveButton)
         cancelButton = view.findViewById(R.id.cancelButton)
-        progressBar = activity?.findViewById(R.id.progressBar)
+        progressBar = view.findViewById(R.id.progressBar)
 
         recipeTitle.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -297,10 +320,12 @@ class UpdateRecipeDialogFragment : DialogFragment() {
 
     private fun updateRecipe(title: String, hashtags: String, description: String, ingredientContainer: LinearLayout, imageUris: List<Uri>) {
         progressBar?.visibility = View.VISIBLE // Show spinner
+
         val userId = auth.currentUser?.uid
         if (userId == null) {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-            progressBar?.visibility = View.GONE // Hide spinner
+             progressBar?.visibility = View.GONE // Hide spinner
+
             return
         }
 
@@ -324,29 +349,49 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         val recipeRef = firestore.collection("recipes").document(recipeId)
         val storageRef = storageReference.child("recipe_images/$recipeId")
 
-        uploadImages(storageRef, imageUris) { imageUrls ->
+        if (imageUris.isNotEmpty()) {
+            uploadImages(storageRef, imageUris) { newImageUrls ->
+                updatedRecipe["images"] = imageUrls + newImageUrls
+                recipeRef.update(updatedRecipe)
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
+                        progressBar?.visibility = View.GONE // Hide spinner
+
+
+                        parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                            putBoolean("refresh", true)
+                        })
+                        dismiss() // Dismiss the dialog
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                        progressBar?.visibility = View.GONE // Hide spinner
+
+                    }
+            }
+        } else {
             updatedRecipe["images"] = imageUrls
             recipeRef.update(updatedRecipe)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-
                     progressBar?.visibility = View.GONE // Hide spinner
+
+
                     parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
-                        putBoolean("refresh", true) })
+                        putBoolean("refresh", true)
+                    })
                     dismiss() // Dismiss the dialog
-
-                    // Set the result
-
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()
-                    progressBar?.visibility = View.GONE // Hide spinner
+                     progressBar?.visibility = View.GONE // Hide spinner
+
                 }
         }
     }
 
     private fun uploadImages(storageRef: StorageReference, imageUris: List<Uri>, callback: (List<String>) -> Unit) {
-        val imageUrls = mutableListOf<String>()
+        val newImageUrls = mutableListOf<String>()
         var uploadCount = 0
 
         for (uri in imageUris) {
@@ -354,10 +399,10 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             imageRef.putFile(uri)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                        imageUrls.add(downloadUrl.toString())
+                        newImageUrls.add(downloadUrl.toString())
                         uploadCount++
                         if (uploadCount == imageUris.size) {
-                            callback(imageUrls)
+                            callback(newImageUrls)
                         }
                     }
                 }
