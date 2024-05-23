@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -87,9 +88,11 @@ class HomeFragment : Fragment() {
         isLoading = true
 
         progressBar?.visibility = View.VISIBLE
+        val userId = auth.currentUser?.uid
 
         var query: Query = firestore.collection("recipes")
-            .orderBy("timestamp")
+            //.whereNotEqualTo("userId", userId)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
             .limit(pageSize.toLong())
 
         if (lastVisible != null && !initialLoad) {
@@ -98,28 +101,35 @@ class HomeFragment : Fragment() {
 
         query.get()
             .addOnSuccessListener { documents ->
-                if (documents.size() > 0) {
-                    lastVisible = documents.documents[documents.size() - 1]
-                    val recipes = mutableListOf<Recipe>()
-                    for (document in documents) {
-                        val recipe = document.toObject(Recipe::class.java)
+                if (documents.isEmpty) {
+                    progressBar?.visibility = View.GONE
+                    isLoading = false
+                    return@addOnSuccessListener
+                }
+
+                val recipes = mutableListOf<Recipe>()
+                for (document in documents) {
+                    val recipe = document.toObject(Recipe::class.java)
+                    if (recipe.userId != userId) { // Manually filter the current user's recipes
                         recipes.add(recipe)
                     }
-                    if (initialLoad) {
-                        recipeAdapter.updateRecipes(recipes)
-                    } else {
-                        recipeAdapter.addRecipes(recipes)
-                    }
                 }
-                isLoading = false
+
+                // Update the last visible document
+                if (documents.size() > 0) {
+                    lastVisible = documents.documents[documents.size() - 1]
+                }
+
+                // Update the UI with the new recipes
+                recipeAdapter.addRecipes(recipes)
+
                 progressBar?.visibility = View.GONE
-                swipeRefreshLayout.isRefreshing = false
+                isLoading = false
             }
             .addOnFailureListener { exception ->
-                // Handle the error
-                isLoading = false
                 progressBar?.visibility = View.GONE
-                swipeRefreshLayout.isRefreshing = false
+                isLoading = false
+                Toast.makeText(requireContext(), "Error loading recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

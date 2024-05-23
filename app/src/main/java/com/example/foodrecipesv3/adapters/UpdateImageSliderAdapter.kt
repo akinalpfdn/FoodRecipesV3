@@ -15,10 +15,9 @@ import com.example.foodrecipesv3.R
 class UpdateImageSliderAdapter(
     private val context: Context,
     private val imageUris: MutableList<Uri>,
-    private val onDeleteClick: (Int) -> Unit
+    private val imageUrls: MutableList<String>, // List to hold existing URLs
+    private val onDeleteClick: (Int, Boolean) -> Unit // Pass a flag to indicate if the item is a URI or a URL
 ) : RecyclerView.Adapter<UpdateImageSliderAdapter.ImageViewHolder>() {
-
-    private var currentPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.item_image_slider_with_delete, parent, false)
@@ -26,32 +25,34 @@ class UpdateImageSliderAdapter(
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-
-        val uri = imageUris[position]
-        Glide.with(context)
-            .load(uri)
-            .into(holder.imageView)
-
-        holder.deleteButton.setOnClickListener {
-            onDeleteClick(position)
+        if (position < imageUris.size) {
+            holder.imageView.setImageURI(imageUris[position])
+        } else {
+            val urlPosition = position - imageUris.size
+            Glide.with(context).load(imageUrls[urlPosition]).into(holder.imageView)
         }
 
-        // Indicator noktalarını ekleme
-        holder.linearLayout.removeAllViews()
-            for (i in imageUris.indices) {
-                val dot = ImageView(context)
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(8, 0, 8, 0)
-                dot.layoutParams = params
-                dot.setImageResource(R.drawable.indicator_inactive_dot)
-                holder.linearLayout.addView(dot)
+        holder.deleteButton.setOnClickListener {
+            if (position < imageUris.size) {
+                onDeleteClick(position, true) // true indicates it's a URI
+            } else {
+                onDeleteClick(position - imageUris.size, false) // false indicates it's a URL
             }
+        }
 
+        holder.linearLayout.removeAllViews()
+        for (i in 0 until itemCount) {
+            val dot = ImageView(context)
+            val params = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            )
+            params.setMargins(8, 0, 8, 0)
+            dot.layoutParams = params
+            dot.setImageResource(R.drawable.indicator_inactive_dot)
+            holder.linearLayout.addView(dot)
+        }
 
-        // Mevcut pozisyonu güncelleme
         for (i in 0 until holder.linearLayout.childCount) {
             val dot = holder.linearLayout.getChildAt(i) as ImageView
             if (i == position) {
@@ -63,7 +64,7 @@ class UpdateImageSliderAdapter(
     }
 
     override fun getItemCount(): Int {
-        return imageUris.size
+        return imageUris.size + imageUrls.size
     }
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

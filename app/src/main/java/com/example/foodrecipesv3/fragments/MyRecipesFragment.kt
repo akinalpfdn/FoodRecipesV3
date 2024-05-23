@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 class MyRecipesFragment : Fragment() {
 
@@ -23,7 +27,12 @@ class MyRecipesFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var toggleButton: ImageButton
+    private var progressBar: ProgressBar? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var isGridLayout = false
+    private var lastVisible: DocumentSnapshot? = null
+    private val pageSize = 20
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +44,11 @@ class MyRecipesFragment : Fragment() {
 
         toggleButton.setOnClickListener {
             toggleLayout()
+        }
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        swipeRefreshLayout.setOnRefreshListener {
+            fetchRecipes(true)
         }
         return view
     }
@@ -59,29 +73,74 @@ class MyRecipesFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recipeAdapter = RecipeAdapter(mutableListOf())
         recyclerView.adapter = recipeAdapter
+        progressBar = activity?.findViewById(R.id.progressBar)
 
-        fetchUserRecipes()
+        fetchRecipes(true)
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                if (!isLoading && totalItemCount <= (lastVisibleItem + 5)) {
+                    fetchRecipes(false)
+                }
+            }
+        })
+
+        // Set up the FragmentResultListener
+        parentFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
+            val refresh = bundle.getBoolean("refresh")
+            if (refresh) {
+                fetchRecipes(true)
+            }
+        }
+
     }
 
-    private fun fetchUserRecipes() {
+    fun fetchRecipes(initialLoad: Boolean) {
+        if (isLoading) return
+        isLoading = true
+
+        progressBar?.visibility = View.VISIBLE
         val userId = auth.currentUser?.uid
-        if (userId != null) {
-            firestore.collection("recipes")
-                .whereEqualTo("userId", userId)
-                .get()
-                .addOnSuccessListener { documents ->
+
+        var query: Query = firestore.collection("recipes")
+            .whereEqualTo("userId", userId)
+            .orderBy("timestamp", Query.Direction.DESCENDING)
+            .limit(pageSize.toLong())
+
+        if (lastVisible != null && !initialLoad) {
+            query = query.startAfter(lastVisible!!)
+        }
+
+        query.get()
+            .addOnSuccessListener { documents ->
+                if (documents.size() > 0) {
+                    lastVisible = documents.documents[documents.size() - 1]
                     val recipes = mutableListOf<Recipe>()
                     for (document in documents) {
                         val recipe = document.toObject(Recipe::class.java)
                         recipe.id = document.id // Set the document ID
                         recipes.add(recipe)
                     }
-                    recipeAdapter.updateRecipes(recipes)
+                    if (initialLoad) {
+                        recipeAdapter.updateRecipes(recipes)
+                    } else {
+                        recipeAdapter.addRecipes(recipes)
+                    }
                 }
-                .addOnFailureListener { exception ->
-                    // Handle the error
-                }
-        }
+                isLoading = false
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+                isLoading = false
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
+            }
     }
 
     private fun openUpdateRecipeFragment(recipeId: String) {

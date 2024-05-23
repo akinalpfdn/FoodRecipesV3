@@ -16,9 +16,9 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
-import com.example.foodrecipesv3.adapters.AddedImageSliderAdapter
 import com.example.foodrecipesv3.adapters.UpdateImageSliderAdapter
 import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
@@ -30,6 +30,7 @@ import com.google.firebase.storage.StorageReference
 class UpdateRecipeDialogFragment : DialogFragment() {
 
     private val imageUris: MutableList<Uri> = mutableListOf()
+    private val imageUrls: MutableList<String> = mutableListOf()
     private lateinit var storageReference: StorageReference
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
@@ -59,7 +60,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
     private lateinit var charCountText: TextView
     private lateinit var viewPager: ViewPager2
     private lateinit var indicatorLayout: LinearLayout
-    private lateinit var saveRecipeButton:  Button
+    private lateinit var saveRecipeButton: Button
     private lateinit var cancelButton: Button
     private var progressBar: ProgressBar? = null
 
@@ -107,10 +108,14 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         addImageButton.setOnClickListener { selectImage() }
         addIngredientButton.setOnClickListener { addNewIngredientRow(ingredientContainer) }
 
-        viewPager.adapter = UpdateImageSliderAdapter(requireContext(), imageUris) { position ->
-            imageUris.removeAt(position)
+        viewPager.adapter = UpdateImageSliderAdapter(requireContext(), imageUris, imageUrls) { position, isUri ->
+            if (isUri) {
+                imageUris.removeAt(position)
+            } else {
+                imageUrls.removeAt(position)
+            }
             viewPager.adapter?.notifyItemRemoved(position)
-            viewPager.adapter?.notifyItemRangeChanged(position, imageUris.size)
+            viewPager.adapter?.notifyItemRangeChanged(position, imageUris.size + imageUrls.size)
         }
 
         saveRecipeButton.setOnClickListener { showConfirmationDialog() }
@@ -146,7 +151,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             addNewIngredientRowWithText(ingredientContainer, ingredient)
         }
 
-        imageUris.addAll(recipe.images.map { Uri.parse(it) })
+        imageUrls.addAll(recipe.images)
         viewPager.adapter?.notifyDataSetChanged()
     }
 
@@ -192,21 +197,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         newRow.addView(deleteButton)
         container.addView(newRow)
     }
-    //tariflerim kısmında açılan modalın boyutlarını belirleme
-    override fun onStart() {
-        super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            val width = WindowManager.LayoutParams.MATCH_PARENT
-            val displayMetrics = DisplayMetrics()
-            val display = context?.display
-            display?.getRealMetrics(displayMetrics)
-            val height = (displayMetrics.heightPixels * 0.7).toInt()
-            dialog.window?.setLayout(width, height)
-            //aşağıdaki kod corner verince çıkan siyah sivri çıkıntıları engellemek için
-            dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        }
-    }
+
     private fun addNewIngredientRow(container: LinearLayout) {
         val newRow = LinearLayout(requireContext()).apply {
             orientation = LinearLayout.HORIZONTAL
@@ -234,10 +225,9 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
-                setMargins(8,2,2,2)
+                setMargins(8, 2, 2, 2)
             }
             setImageResource(R.drawable.baseline_delete_24)
-            // setBackgroundResource(R.drawable.neumorphism_button_small)
             background = ContextCompat.getDrawable(requireContext(), R.drawable.neumorphism_button_small)
             setBackgroundColor(android.graphics.Color.TRANSPARENT)
             setOnClickListener {
@@ -249,9 +239,6 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         newRow.addView(deleteButton)
         container.addView(newRow)
     }
-
-
-
 
     private fun showConfirmationDialog() {
         AlertDialog.Builder(requireContext())
@@ -265,7 +252,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
     }
 
     private fun selectImage() {
-        if (imageUris.size >= 3) {
+        if (imageUris.size + imageUrls.size >= 3) {
             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
             return
         }
@@ -287,7 +274,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                 if (clipData != null) {
                     for (i in 0 until clipData.itemCount) {
                         val uri = clipData.getItemAt(i).uri
-                        if (imageUris.size < 3) {
+                        if (imageUris.size + imageUrls.size < 3) {
                             imageUris.add(uri)
                         } else {
                             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
@@ -296,7 +283,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                     }
                 } else {
                     intentData.data?.let { uri ->
-                        if (imageUris.size < 3) {
+                        if (imageUris.size + imageUrls.size < 3) {
                             imageUris.add(uri)
                         } else {
                             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
@@ -342,7 +329,14 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             recipeRef.update(updatedRecipe)
                 .addOnSuccessListener {
                     Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
+
                     progressBar?.visibility = View.GONE // Hide spinner
+                    parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                        putBoolean("refresh", true) })
+                    dismiss() // Dismiss the dialog
+
+                    // Set the result
+
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()

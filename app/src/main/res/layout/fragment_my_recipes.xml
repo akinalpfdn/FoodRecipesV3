@@ -16,7 +16,12 @@
         android:layout_alignParentEnd="true"
         android:layout_margin="16dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipesRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,4 +31,5 @@
         android:layout_marginBottom="0dp"
         tools:ignore="NotSibling" />
 
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>
