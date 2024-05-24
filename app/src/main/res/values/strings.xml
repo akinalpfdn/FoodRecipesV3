@@ -28,4 +28,8 @@
     <string name="logout">Logout</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_recipe">Delete Recipe</string>
+    <string name="save_icon">Save Recipe</string>
+    <string name="like_icon">Like Recipe</string>
+    <string name="_0">0</string>
 </resources>

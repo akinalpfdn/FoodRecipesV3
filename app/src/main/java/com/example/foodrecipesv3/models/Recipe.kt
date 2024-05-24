@@ -10,8 +10,8 @@ data class Recipe(
     val hashtags: String = "",
     val ingredients: List<String> = emptyList(), // Use List<String> to store image URLs from Firebase
     val timestamp: Timestamp? = null,
-    val likeCount: Int = 0,
-    val savedCount: Int = 0,
+    var likeCount: Int = 0,
+    var savedCount: Int = 0,
 
     var id: String = "",
 ) {

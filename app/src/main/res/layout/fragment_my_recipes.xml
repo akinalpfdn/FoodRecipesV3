@@ -25,8 +25,8 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <ImageButton
         android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:contentDescription="@string/toogle_grid_view"
         android:src="@drawable/two_column"
         android:background="?attr/selectableItemBackgroundBorderless"

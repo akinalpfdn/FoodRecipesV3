@@ -20,9 +20,11 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
+    //private lateinit var firestore: FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -58,10 +60,35 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+       // firestore = FirebaseFirestore.getInstance()
 
+      //  updateRecipesWithRandomCounts()
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
     }
+    /*
+    private fun updateRecipesWithRandomCounts() {
+        val recipesRef = firestore.collection("recipes")
+
+        recipesRef.get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val likeCount = Random.nextInt(0, 1001)
+                    val savedCount = Random.nextInt(0, 1001)
+
+                    val recipeRef = recipesRef.document(document.id)
+                    recipeRef.update(mapOf(
+                        "likeCount" to likeCount,
+                        "savedCount" to savedCount
+                    ))
+                }
+            }
+            .addOnFailureListener { exception ->
+                // Handle any errors
+                exception.printStackTrace()
+            }
+    }
+    */
 // burası test amaclıdır daha sonra silinecektir
     fun duplicateDocuments(times: Int) {
         val firestore = FirebaseFirestore.getInstance()

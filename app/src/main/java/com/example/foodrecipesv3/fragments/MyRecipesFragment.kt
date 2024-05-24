@@ -1,5 +1,6 @@
 package com.example.foodrecipesv3.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.foodrecipesv3.R
-import com.example.foodrecipesv3.adapters.RecipeAdapter
+import com.example.foodrecipesv3.adapters.MyRecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -23,7 +24,7 @@ import com.google.firebase.firestore.Query
 class MyRecipesFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var recipeAdapter: RecipeAdapter
+    private lateinit var myRecipeAdapter: MyRecipeAdapter
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var toggleButton: ImageButton
@@ -61,7 +62,7 @@ class MyRecipesFragment : Fragment() {
             recyclerView.layoutManager = LinearLayoutManager(context)
             toggleButton.setImageResource(R.drawable.one_column)
         }
-        recipeAdapter.notifyItemRangeChanged(0, recipeAdapter.itemCount)
+        myRecipeAdapter.notifyItemRangeChanged(0, myRecipeAdapter.itemCount)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,8 +72,10 @@ class MyRecipesFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recipesRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recipeAdapter = RecipeAdapter(mutableListOf())
-        recyclerView.adapter = recipeAdapter
+        myRecipeAdapter = MyRecipeAdapter(mutableListOf()){ recipe ->//bu callback funtion oluyor
+            showDeleteConfirmationDialog(recipe)
+        }
+        recyclerView.adapter = myRecipeAdapter
         progressBar = activity?.findViewById(R.id.progressBar)
 
         fetchRecipes(true)
@@ -98,7 +101,30 @@ class MyRecipesFragment : Fragment() {
         }
 
     }
-
+    private fun showDeleteConfirmationDialog(recipe: Recipe) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Delete Recipe")
+            .setMessage("Are you sure you want to delete this recipe?")
+            .setPositiveButton("Yes") { dialog, _ ->
+                deleteRecipe(recipe)
+                dialog.dismiss()
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
+    private fun deleteRecipe(recipe: Recipe) {
+        progressBar?.visibility = View.VISIBLE
+        firestore.collection("recipes").document(recipe.id)
+            .delete()
+            .addOnSuccessListener {
+                myRecipeAdapter.removeRecipe(recipe)
+                progressBar?.visibility = View.GONE
+            }
+            .addOnFailureListener { e ->
+                // Handle the error
+                progressBar?.visibility = View.GONE
+            }
+    }
     fun fetchRecipes(initialLoad: Boolean) {
         if (isLoading) return
         isLoading = true
@@ -126,9 +152,9 @@ class MyRecipesFragment : Fragment() {
                         recipes.add(recipe)
                     }
                     if (initialLoad) {
-                        recipeAdapter.updateRecipes(recipes)
+                        myRecipeAdapter.updateRecipes(recipes)
                     } else {
-                        recipeAdapter.addRecipes(recipes)
+                        myRecipeAdapter.addRecipes(recipes)
                     }
                 }
                 isLoading = false

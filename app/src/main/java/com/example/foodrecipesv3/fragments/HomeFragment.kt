@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
         val userId = auth.currentUser?.uid
 
         var query: Query = firestore.collection("recipes")
-            //.whereNotEqualTo("userId", userId)
+            .whereNotEqualTo("userId", userId)
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .limit(pageSize.toLong())
 
@@ -101,35 +101,31 @@ class HomeFragment : Fragment() {
 
         query.get()
             .addOnSuccessListener { documents ->
-                if (documents.isEmpty) {
-                    progressBar?.visibility = View.GONE
-                    isLoading = false
-                    return@addOnSuccessListener
-                }
-
-                val recipes = mutableListOf<Recipe>()
-                for (document in documents) {
-                    val recipe = document.toObject(Recipe::class.java)
-                    if (recipe.userId != userId) { // Manually filter the current user's recipes
-                        recipes.add(recipe)
-                    }
-                }
-
-                // Update the last visible document
                 if (documents.size() > 0) {
                     lastVisible = documents.documents[documents.size() - 1]
+                    val recipes = mutableListOf<Recipe>()
+                    for (document in documents) {
+                        val recipe = document.toObject(Recipe::class.java)
+                        recipe.id = document.id
+                        recipes.add(recipe)
+                    }
+
+                    if (initialLoad) {
+                        recipeAdapter.updateRecipes(recipes)
+                    } else {
+                        recipeAdapter.addRecipes(recipes)
+                    }
                 }
-
-                // Update the UI with the new recipes
-                recipeAdapter.addRecipes(recipes)
-
-                progressBar?.visibility = View.GONE
                 isLoading = false
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
             }
             .addOnFailureListener { exception ->
-                progressBar?.visibility = View.GONE
                 isLoading = false
-                Toast.makeText(requireContext(), "Error loading recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                progressBar?.visibility = View.GONE
+                swipeRefreshLayout.isRefreshing = false
+                // Handle the error
+                Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
