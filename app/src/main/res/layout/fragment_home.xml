@@ -6,9 +6,31 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
 
+    <RelativeLayout
+        android:id="@+id/topRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:backgroundTint="@color/bottom_nav_background"
+        app:itemIconTint="@color/bottom_nav_icon"
+        app:itemTextColor="@color/bottom_nav_text" >
+
+        <include layout="@layout/order_menu" />
+
+        <ImageButton
+            android:id="@+id/toggleButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/toogle_grid_view"
+            android:src="@drawable/two_column"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp" />
+    </RelativeLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
+        android:layout_below="@id/topRow"
         android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -22,14 +44,6 @@
         tools:ignore="NotSibling" />
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <ImageButton
-        android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/toogle_grid_view"
-        android:src="@drawable/two_column"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp" />
+
 
 </RelativeLayout>

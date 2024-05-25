@@ -32,4 +32,12 @@
     <string name="save_icon">Save Recipe</string>
     <string name="like_icon">Like Recipe</string>
     <string name="_0">0</string>
+    <string name="assending_icon">assending icon</string>
+    <string name="descending_icon">descending icon</string>
+    <string name="dropdown_icon">dropdown icon</string>
+    <string-array name="order_options">
+        <item>Date</item>
+        <item>Like Count</item>
+        <item>Save Count</item>
+    </string-array>
 </resources>

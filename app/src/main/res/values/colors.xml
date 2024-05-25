@@ -6,7 +6,7 @@
     <color name="background_color_start">#FBF3D5</color>
     <color name="background_color_end">#EFBC9B</color>
     <color name="card_background">#FAE5CF</color>
-    <color name="text_color_primary">#333333</color>
+    <color name="text_color_primary">#494458</color>
     <color name="text_color_secondary">#FFC09474</color>
     <color name="bottom_nav_background">#FAD7B2</color>
     <color name="bottom_nav_icon">#c09474</color>
@@ -19,4 +19,5 @@
     <color name="colorPrimaryDark">#202020</color><!--toolbar buton rengini degistiriyor-->
     <color name="colorAccent">#FFEB3B</color>
     <color name="your_desired_color">#673AB7</color>
+
 </resources>

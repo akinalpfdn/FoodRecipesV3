@@ -8,7 +8,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="50dp"
         android:background="@color/bottom_nav_background"
         android:fitsSystemWindows="true"
         app:titleTextColor="@color/button_end"

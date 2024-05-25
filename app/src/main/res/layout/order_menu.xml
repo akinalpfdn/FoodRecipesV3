@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <Spinner
+        android:id="@+id/orderSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:entries="@array/order_options" />
+
+    <ImageView
+        android:id="@+id/ascendingIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_arrow_downward_24"
+        android:contentDescription="@string/assending_icon"
+        android:padding="8dp" />
+
+    <ImageView
+        android:id="@+id/descendingIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/descending_icon"
+        android:src="@drawable/baseline_arrow_upward_24"
+        android:visibility="gone"
+        android:padding="8dp" />
+</LinearLayout>

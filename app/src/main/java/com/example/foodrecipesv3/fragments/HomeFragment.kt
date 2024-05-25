@@ -4,9 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +41,11 @@ class HomeFragment : Fragment() {
     private val pageSize = 20
     private var isLoading = false
 
+    //for ordering
+    private lateinit var orderSpinner: Spinner
+    private lateinit var ascendingIcon: ImageView
+    private lateinit var descendingIcon: ImageView
+    private var isAscending = false
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,8 +76,13 @@ class HomeFragment : Fragment() {
         recipeAdapter = RecipeAdapter(mutableListOf())
         recyclerView.adapter = recipeAdapter
 
-        progressBar = activity?.findViewById(R.id.progressBar)
+        //for ordering
+        orderSpinner = view.findViewById(R.id.orderSpinner)
+        ascendingIcon = view.findViewById(R.id.ascendingIcon)
+        descendingIcon = view.findViewById(R.id.descendingIcon)
 
+
+        progressBar = activity?.findViewById(R.id.progressBar)
         fetchRecipes(true)
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -81,8 +97,90 @@ class HomeFragment : Fragment() {
                 }
             }
         })
-    }
+        /*
+        val adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.order_options,
+            R.layout.spinner_item // Use the new layout here
+        )
 
+         */
+
+        val spinner: Spinner = view.findViewById(R.id.orderSpinner)
+        val orderOptions = resources.getStringArray(R.array.order_options)
+
+        val adapter = object : ArrayAdapter<String>(requireContext(), R.layout.spinner_item, orderOptions) {
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view2 = super.getView(position, convertView, parent) as TextView
+                setIcon(view2, position)
+                return view2
+            }
+
+            override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view2 = super.getDropDownView(position, convertView, parent) as TextView
+                view2.text = orderOptions[position] // Show full text in dropdown
+                return view2
+            }
+
+            private fun setIcon(view: TextView, position: Int) {
+                val drawable = when (position) {
+                    0 -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_calendar
+                    ) // Your black calendar icon
+                    1 -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.ic_heart_outline
+                    ) // Your black heart icon
+                    2 -> ContextCompat.getDrawable(
+                        context,
+                        R.drawable.baseline_bookmark_border_24
+                    ) // Your black bookmark icon
+                    else -> null
+                }
+                view.text = when (position) {
+                    0 -> ""
+                    1 -> ""
+                    2 -> ""
+                    else -> ""
+                }
+                val drawableEnd =ContextCompat.getDrawable( context,R.drawable.baseline_arrow_drop_down_24)
+
+                            view.setCompoundDrawablesWithIntrinsicBounds(drawable, null, drawableEnd, null)
+            }
+        }
+
+        //spinner.adapter = adapter
+
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item) // Custom layout for dropdown item
+        orderSpinner.adapter = adapter
+        setupOrderMenu()
+
+    }
+    private fun setupOrderMenu() {
+        orderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                fetchRecipes(true)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
+        ascendingIcon.setOnClickListener {
+            isAscending = true
+            ascendingIcon.visibility = View.GONE
+            descendingIcon.visibility = View.VISIBLE
+            fetchRecipes(true)
+        }
+
+        descendingIcon.setOnClickListener {
+            isAscending = false
+            ascendingIcon.visibility = View.VISIBLE
+            descendingIcon.visibility = View.GONE
+            fetchRecipes(true)
+        }
+
+    }
     private fun fetchRecipes(initialLoad: Boolean) {
         if (isLoading) return
         isLoading = true
@@ -92,8 +190,13 @@ class HomeFragment : Fragment() {
 
         var query: Query = firestore.collection("recipes")
             .whereNotEqualTo("userId", userId)
-            .orderBy("timestamp", Query.Direction.DESCENDING)
-            .limit(pageSize.toLong())
+
+        when (orderSpinner.selectedItem.toString()) {
+            "Date" -> query = query.orderBy("timestamp", if (isAscending) Query.Direction.ASCENDING else Query.Direction.DESCENDING)
+            "Like Count" -> query = query.orderBy("likeCount", if (isAscending) Query.Direction.ASCENDING else Query.Direction.DESCENDING)
+            "Save Count" -> query = query.orderBy("savedCount", if (isAscending) Query.Direction.ASCENDING else Query.Direction.DESCENDING)
+        }
+        query = query.limit(pageSize.toLong())
 
         if (lastVisible != null && !initialLoad) {
             query = query.startAfter(lastVisible!!)
