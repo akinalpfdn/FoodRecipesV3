@@ -22,4 +22,15 @@
     <string name="enter_detailed_instructions">Detaylı Tarifi Giriniz</string>
     <string name="add_image">Fotoğraf Ekle</string>
     <string name="add_images_up_to_3">Fotoğraflar (En Fazla 3)</string>
+    <string name="default_web_client_id">96062646398-8t1t9mj8bf2v8etjc1mtqta6clkhko5c.apps.googleusercontent.com</string>
+    <string name="delete_image">Fotoğrafı Sil</string>
+    <string name="title_char_limit">0/50</string>
+    <string name="toogle_grid_view">Grid Yapısını Değiştir</string>
+    <string name="logout">Çıkış Yap</string>
+    <string name="save">Kaydet</string>
+    <string name="cancel">İptal</string>
+    <string name="delete_recipe">Tarifi Sil</string>
+    <string name="save_icon">Tarifi Kaydet</string>
+    <string name="like_icon">Tarifi Beğen</string>
+    <string name="_0">0</string>
 </resources>

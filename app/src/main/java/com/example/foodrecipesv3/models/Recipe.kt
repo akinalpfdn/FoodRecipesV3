@@ -12,9 +12,12 @@ data class Recipe(
     val timestamp: Timestamp? = null,
     var likeCount: Int = 0,
     var savedCount: Int = 0,
-
     var id: String = "",
+    var isLiked: Boolean,
+    var isSaved: Boolean,
+
 ) {
-      constructor() : this("", "", emptyList(), "", "", emptyList(), null, 0, 0,"")
+
+    constructor() : this("", "", emptyList(), "", "", emptyList(), null, 0, 0,"",false,false)
 
 }

@@ -102,24 +102,48 @@ class HomeFragment : Fragment() {
         query.get()
             .addOnSuccessListener { documents ->
                 if (documents.size() > 0) {
+
                     lastVisible = documents.documents[documents.size() - 1]
                     val recipes = mutableListOf<Recipe>()
-                    for (document in documents) {
-                        val recipe = document.toObject(Recipe::class.java)
-                        recipe.id = document.id
-                        recipes.add(recipe)
-                    }
+                    val recipeIds = documents.documents.map { it.id }
+                    // Fetch liked recipes
+                    val likedRecipesQuery = firestore.collection("likedRecipes")
+                        .whereEqualTo("userId", userId)
+                        .whereIn("recipeId", recipeIds)
 
-                    if (initialLoad) {
-                        recipeAdapter.updateRecipes(recipes)
-                    } else {
-                        recipeAdapter.addRecipes(recipes)
+                    likedRecipesQuery.get().addOnSuccessListener { likedDocs ->
+                        val likedRecipeIds = likedDocs.documents.map { it.getString("recipeId") }
+
+                        // Query to fetch saved recipes for the current user
+                        val savedRecipesQuery = firestore.collection("savedRecipes")
+                            .whereEqualTo("userId", userId)
+                            .whereIn("recipeId", recipeIds)
+
+                        savedRecipesQuery.get().addOnSuccessListener { savedDocs ->
+                            val savedRecipeIds =
+                                savedDocs.documents.map { it.getString("recipeId") }
+
+                            for (document in documents) {
+                                val recipe = document.toObject(Recipe::class.java)
+                                recipe.id = document.id
+                                recipe.isLiked = likedRecipeIds.contains(recipe.id)
+                                recipe.isSaved = savedRecipeIds.contains(recipe.id)
+                                recipes.add(recipe)
+                            }
+
+                            if (initialLoad) {
+                                recipeAdapter.updateRecipes(recipes)
+                            } else {
+                                recipeAdapter.addRecipes(recipes)
+                            }
+
+                        }
+                    }
+                        isLoading = false
+                        progressBar?.visibility = View.GONE
+                        swipeRefreshLayout.isRefreshing = false
                     }
                 }
-                isLoading = false
-                progressBar?.visibility = View.GONE
-                swipeRefreshLayout.isRefreshing = false
-            }
             .addOnFailureListener { exception ->
                 isLoading = false
                 progressBar?.visibility = View.GONE
@@ -127,7 +151,8 @@ class HomeFragment : Fragment() {
                 // Handle the error
                 Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
-    }
+                    }
+
 
     private fun toggleLayout() {
         isGridLayout = !isGridLayout
