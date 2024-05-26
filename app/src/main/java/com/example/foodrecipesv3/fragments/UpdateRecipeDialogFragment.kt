@@ -3,24 +3,21 @@ package com.example.foodrecipesv3.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.UpdateImageSliderAdapter
@@ -155,7 +152,7 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             .addOnSuccessListener { document ->
                 if (document.exists()) {
                     currentRecipe = document.toObject(Recipe::class.java)!!
-                    fillRecipeData(currentRecipe)
+                    fetchHashtagsForRecipe(currentRecipe)
                 } else {
                     Toast.makeText(requireContext(), "Recipe not found", Toast.LENGTH_SHORT).show()
                 }
@@ -164,10 +161,21 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                 Toast.makeText(requireContext(), "Error loading recipe: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
-    private fun fillRecipeData(recipe: Recipe) {
+    private fun fetchHashtagsForRecipe(recipe: Recipe) {
+        firestore.collection("post_hashtags")
+            .whereEqualTo("recipeId", recipeId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val hashtags = querySnapshot.documents.mapNotNull { it.getString("hashtag") }
+                fillRecipeData(recipe, hashtags.joinToString(" "))
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Error loading hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+    private fun fillRecipeData(recipe: Recipe, hashtags: String) {
         recipeTitle.setText(recipe.title)
-        recipeHashtags.setText(recipe.hashtags)
+        recipeHashtags.setText(hashtags)
         recipeInstructions.setText(recipe.description)
 
         recipe.ingredients.forEach { ingredient ->
@@ -261,6 +269,11 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         newRow.addView(newEditText)
         newRow.addView(deleteButton)
         container.addView(newRow)
+
+        // Request focus on the new EditText and show the keyboard
+        newEditText.requestFocus()
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(newEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun showConfirmationDialog() {
@@ -345,6 +358,12 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             "images" to currentRecipe.images.toMutableList(),
             "timestamp" to FieldValue.serverTimestamp()
         )
+        val updatedHashtags = hashtags.split(" ")
+            .filter { it.isNotEmpty() && it.matches(Regex("^#[A-Za-z0-9_]+$")) } // Only include valid hashtags
+        val currentHashtags = currentRecipe.hashtags.split(" ")
+            .filter { it.isNotEmpty() && it.matches(Regex("^#[A-Za-z0-9_]+$")) } // Only include valid hashtags
+        val hashtagsToAdd = updatedHashtags.subtract(currentHashtags.toSet()).toList()
+        val hashtagsToRemove = currentHashtags.subtract(updatedHashtags.toSet()).toList()
 
         val recipeRef = firestore.collection("recipes").document(recipeId)
         val storageRef = storageReference.child("recipe_images/$recipeId")
@@ -354,9 +373,15 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                 updatedRecipe["images"] = imageUrls + newImageUrls
                 recipeRef.update(updatedRecipe)
                     .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-                        progressBar?.visibility = View.GONE // Hide spinner
+                        handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
+                            Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
+                            progressBar?.visibility = View.GONE // Hide spinner
 
+                            parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                                putBoolean("refresh", true)
+                            })
+                            dismiss() // Dismiss the dialog
+                        }
 
                         parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
                             putBoolean("refresh", true)
@@ -373,14 +398,20 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             updatedRecipe["images"] = imageUrls
             recipeRef.update(updatedRecipe)
                 .addOnSuccessListener {
-                    Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-                    progressBar?.visibility = View.GONE // Hide spinner
+                    handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
+                        dismiss() // Dismiss the dialog
+                        Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
+                        progressBar?.visibility = View.GONE // Hide spinner
+
+                        parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                            putBoolean("refresh", true)
+                        })
+                    }
 
 
                     parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
                         putBoolean("refresh", true)
                     })
-                    dismiss() // Dismiss the dialog
                 }
                 .addOnFailureListener { e ->
                     Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()
@@ -389,7 +420,48 @@ class UpdateRecipeDialogFragment : DialogFragment() {
                 }
         }
     }
+    private fun handleHashtagUpdates(recipeId: String,hashtagsToAdd: List<String>, hashtagsToRemove: List<String>, onComplete: () -> Unit) {
+        firestore.runTransaction { transaction ->
+            hashtagsToRemove.forEach { hashtag ->
 
+                val hashtagRef = firestore.collection("hashtags").document(hashtag)
+                val postHashtagRef = firestore.collection("post_hashtags").document( "${hashtag}_${recipeId}")
+
+                val snapshot = transaction.get(hashtagRef)
+                val postCount = snapshot.getLong("postCount") ?: 0L
+                if (postCount > 1) {
+                    transaction.update(hashtagRef, "postCount", postCount - 1)
+                } else {
+                    transaction.delete(hashtagRef)
+                }
+
+                transaction.delete(postHashtagRef)
+            }
+
+            hashtagsToAdd.forEach { hashtag ->
+                val hashtagRef = firestore.collection("hashtags").document(hashtag)
+                val postHashtagRef = firestore.collection("post_hashtags").document("${hashtag}_${recipeId}")
+
+                val snapshot = transaction.get(hashtagRef)
+                if (snapshot.exists()) {
+                    val postCount = snapshot.getLong("postCount") ?: 0L
+                    transaction.update(hashtagRef, "postCount", postCount + 1)
+                } else {
+                    transaction.set(hashtagRef, mapOf("name" to hashtag, "postCount" to 1))
+                }
+
+                transaction.set(postHashtagRef, mapOf("recipeId" to recipeId, "hashtag" to hashtag))
+            }
+        }.addOnSuccessListener {
+            onComplete()
+        }.addOnFailureListener { e ->
+            // Ensure the context is still valid before showing the Toast
+            if (isAdded && context != null) {
+                Toast.makeText(requireContext(), "Error updating hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+            progressBar?.visibility = View.GONE // Hide spinner
+        }
+    }
     private fun uploadImages(storageRef: StorageReference, imageUris: List<Uri>, callback: (List<String>) -> Unit) {
         val newImageUrls = mutableListOf<String>()
         var uploadCount = 0

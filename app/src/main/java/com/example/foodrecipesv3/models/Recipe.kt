@@ -16,7 +16,7 @@ data class Recipe(
     var isLiked: Boolean,
     var isSaved: Boolean,
 
-) {
+    ) {
 
     constructor() : this("", "", emptyList(), "", "", emptyList(), null, 0, 0,"",false,false)
 

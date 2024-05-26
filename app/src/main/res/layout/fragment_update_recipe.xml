@@ -42,19 +42,22 @@
                     android:id="@+id/recipeTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="16dp"
                     android:autofillHints="Title"
-                    android:background="@drawable/card_background"
-                    android:elevation="5dp"
                     android:hint="@string/recipe_title"
+                    android:textAlignment="center"
+                    android:background="@drawable/border_background"
+                    android:layout_centerVertical="true"
                     android:inputType="text"
                     android:maxLength="50"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColorHint="@color/hint_color"
                     android:textColor="@color/text_color_primary"
-                    android:textColorHint="@color/text_color_primary"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:padding="4dp"
+                    android:layout_margin="0dp"
+                    android:layout_marginBottom="16dp" />
 
             </RelativeLayout>
 
@@ -124,17 +127,18 @@
                 android:id="@+id/recipeHashtags"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
                 android:layout_marginBottom="16dp"
                 android:autofillHints="hashtags"
-                android:background="@drawable/card_background"
-                android:elevation="5dp"
-                android:hint="@string/enter_hashtags"
                 android:inputType="text"
+                android:textCursorDrawable = "@null"
+                android:background="@drawable/border_background"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:hint="@string/enter_hashtags"
                 android:textColor="@color/text_color_primary"
-                android:textColorHint="@color/hint_color"
-                android:textCursorDrawable="@null" />
+                android:textColorHint="@color/hint_color" />
 
             <TextView
                 android:layout_width="wrap_content"

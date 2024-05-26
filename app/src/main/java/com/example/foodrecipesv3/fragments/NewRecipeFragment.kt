@@ -3,6 +3,7 @@ package com.example.foodrecipesv3.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -174,6 +176,10 @@ class NewRecipeFragment : Fragment() {
         newRow.addView(newEditText)
         newRow.addView(deleteButton)
         container.addView(newRow)
+        // Request focus on the new EditText and show the keyboard
+        newEditText.requestFocus()
+        val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(newEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
 
@@ -248,7 +254,7 @@ class NewRecipeFragment : Fragment() {
             "title" to title,
             "ingredients" to ingredients,
             "description" to description,
-           // "hashtags" to hashtags,
+            "hashtags" to hashtags,
             "userId" to userId,
             "images" to mutableListOf<String>(),
             "timestamp" to FieldValue.serverTimestamp() // Adding the timestamp field
@@ -276,6 +282,10 @@ class NewRecipeFragment : Fragment() {
         val firestore = FirebaseFirestore.getInstance()
 
         for (hashtag in hashtags) {
+            if (!hashtag.startsWith("#") || !hashtag.matches(Regex("^#[A-Za-z0-9_]+$")))
+            {
+                continue
+            }
             val hashtagRef = firestore.collection("hashtags").document(hashtag)
             firestore.runTransaction { transaction ->
                 val snapshot = transaction.get(hashtagRef)
@@ -289,7 +299,7 @@ class NewRecipeFragment : Fragment() {
                 }
 
                 // Create or update the post_hashtags collection
-                val postHashtagRef = firestore.collection("post_hashtags").document()
+                val postHashtagRef = firestore.collection("post_hashtags").document("${hashtag}_${recipeId}")
                 transaction.set(postHashtagRef, hashMapOf("recipeId" to recipeId, "hashtag" to hashtag))
             }.addOnSuccessListener {
                 // Handle success if needed
