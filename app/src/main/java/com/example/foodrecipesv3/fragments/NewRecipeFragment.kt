@@ -242,12 +242,13 @@ class NewRecipeFragment : Fragment() {
         }
         val firestore = FirebaseFirestore.getInstance()
 
+        val hashtagList = hashtags.split(" ").filter { it.isNotBlank() }
 
         val recipe = hashMapOf(
             "title" to title,
             "ingredients" to ingredients,
             "description" to description,
-            "hashtags" to hashtags,
+           // "hashtags" to hashtags,
             "userId" to userId,
             "images" to mutableListOf<String>(),
             "timestamp" to FieldValue.serverTimestamp() // Adding the timestamp field
@@ -260,6 +261,8 @@ class NewRecipeFragment : Fragment() {
             recipe["images"] = imageUrls
             recipeRef.set(recipe)
                 .addOnSuccessListener {
+
+                    saveHashtagsAndAssociations(recipeRef.id, hashtagList)
                     Toast.makeText(requireContext(), "Recipe saved successfully", Toast.LENGTH_SHORT).show()
                     progressBar?.visibility = View.GONE // Spinner'ı gizle
                 }
@@ -269,7 +272,33 @@ class NewRecipeFragment : Fragment() {
                 }
         }
     }
+    private fun saveHashtagsAndAssociations(recipeId: String, hashtags: List<String>) {
+        val firestore = FirebaseFirestore.getInstance()
 
+        for (hashtag in hashtags) {
+            val hashtagRef = firestore.collection("hashtags").document(hashtag)
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(hashtagRef)
+                if (snapshot.exists()) {
+                    // If the hashtag exists, increment the post count
+                    val newPostCount = snapshot.getLong("postCount")!! + 1
+                    transaction.update(hashtagRef, "postCount", newPostCount)
+                } else {
+                    // If the hashtag does not exist, create a new one with post count 1
+                    transaction.set(hashtagRef, hashMapOf("name" to hashtag, "postCount" to 1))
+                }
+
+                // Create or update the post_hashtags collection
+                val postHashtagRef = firestore.collection("post_hashtags").document()
+                transaction.set(postHashtagRef, hashMapOf("recipeId" to recipeId, "hashtag" to hashtag))
+            }.addOnSuccessListener {
+                // Handle success if needed
+            }.addOnFailureListener { e ->
+                // Handle failure if needed
+                Toast.makeText(requireContext(), "Error updating hashtag: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
     private fun uploadImages(storageRef: StorageReference, imageUris: List<Uri>, callback: (List<String>) -> Unit) {
         val imageUrls = mutableListOf<String>()
         var uploadCount = 0
