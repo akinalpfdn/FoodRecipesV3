@@ -7,17 +7,20 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -54,7 +57,9 @@ class NewRecipeFragment : Fragment() {
     private lateinit var indicatorLayout: LinearLayout
     private lateinit var saveRecipeButton: ImageButton
     private   var progressBar: ProgressBar? = null
-
+    //hashtag onerileri icin
+    private val handler = Handler(Looper.getMainLooper())
+    private var searchRunnable: Runnable? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         storageReference = FirebaseStorage.getInstance().reference
@@ -124,7 +129,68 @@ class NewRecipeFragment : Fragment() {
         saveRecipeButton.setOnClickListener {
             showConfirmationDialog()
         }
+
+        recipeHashtags.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val currentText = s.toString()
+                searchRunnable?.let { handler.removeCallbacks(it) }
+                searchRunnable = Runnable {
+                    val words = currentText.split(" ")
+                    val lastWord = words.lastOrNull()
+                    if (lastWord != null && lastWord.startsWith("#") && lastWord.length > 1) {
+                        fetchHashtags(lastWord) { hashtags ->
+                            showHashtagSuggestions(hashtags, words)
+                        }
+                    }
+                }
+                handler.postDelayed(searchRunnable!!, 1000) // 1-second delay
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
+    private fun showHashtagSuggestions(hashtags: List<Pair<String, Long>>, words: List<String>) {
+        // Example using a ListView for simplicity
+        val listView: ListView = view?.findViewById(R.id.listViewHashtagSuggestions) ?: return
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, hashtags.map { "${it.first} (${it.second})" })
+        listView.adapter = adapter
+
+        listView.setOnItemClickListener { parent, view, position, id ->
+            val selectedHashtag = hashtags[position].first
+            val newWords = words.dropLast(1) + "$selectedHashtag"
+            recipeHashtags.setText(newWords.joinToString(" "))
+            recipeHashtags.setSelection(recipeHashtags.text.length) // Move cursor to end
+            listView.adapter = null // Clear the list
+        }
+        recipeHashtags.setOnFocusChangeListener { v, hasFocus ->
+            if (!hasFocus) {
+                listView.adapter = null // Clear the list when focus is lost
+            }
+        }
+    }
+    private fun fetchHashtags(query: String, callback: (List<Pair<String, Long>>) -> Unit) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("hashtags")
+            .whereGreaterThanOrEqualTo("name", query)
+            .whereLessThanOrEqualTo("name", query + '\uf8ff')
+            .orderBy("postCount")
+            .limit(10) // Limit the number of results
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val hashtags = querySnapshot.documents.mapNotNull { document ->
+                    val name = document.getString("name")
+                    val count = document.getLong("postCount") ?: 0L
+                    if (name != null) Pair(name, count) else null
+                }
+                callback(hashtags)
+            }
+            .addOnFailureListener { exception ->
+                // Handle the error
+            }
+    }
+
     private fun showConfirmationDialog() {
         AlertDialog.Builder(requireContext())
             .setTitle("Confirmation")
