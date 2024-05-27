@@ -45,4 +45,9 @@
         <item name="android:colorBackground">@color/bottom_nav_background</item>
         <item name="android:textColor">@color/black</item>
     </style>
+    <style name="CustomProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/custom_progress_bar</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
+    </style>
 </resources>

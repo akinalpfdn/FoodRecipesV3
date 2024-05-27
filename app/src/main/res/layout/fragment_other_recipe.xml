@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/modal_background"
+    android:elevation="5dp"
+    android:id="@+id/updateRecipe">
+
+    <ScrollView
+        android:id="@+id/scrollable"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="8dp"
+        android:paddingTop="16dp"
+        android:paddingRight="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Başlık Girişi -->
+
+                <TextView
+                    android:id="@+id/recipeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="Title"
+                    android:hint="@string/recipe_title"
+                    android:textAlignment="center"
+                    android:background="@drawable/border_background"
+
+                    android:maxLength="50"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:textColorHint="@color/hint_color"
+                    android:textColor="@color/text_color_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:padding="4dp"
+                    android:layout_margin="0dp"
+                    android:layout_marginBottom="16dp" />
+
+
+            <!-- Resim Ekleme Bölümü -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical">
+
+
+                <!-- Image Slider -->
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="0dp" />
+
+                <LinearLayout
+                    android:id="@+id/indicatorLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" />
+            </LinearLayout>
+            <!-- Malzemeler Bölümü -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="5dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:text="@string/ingredients"
+                    android:textColor="@color/text_color_secondary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/bottom_nav_text" />
+
+                <LinearLayout
+                    android:id="@+id/ingredientContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <!-- Daha fazla malzeme ekleme butonu -->
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:text="@string/detailed_recipe"
+                android:textColor="@color/text_color_secondary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="8dp"
+                android:background="@color/bottom_nav_text" />
+            <!-- Detaylı Tarif Girişi -->
+            <TextView
+                android:id="@+id/recipeInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="16dp"
+                android:autofillHints="recipe"
+                android:minLines="5"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color" />
+
+
+            <!-- Hashtag Girişi -->
+            <TextView
+                android:id="@+id/recipeHashtags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/text_color_primary"
+                android:textColorHint="@color/hint_color" />
+
+
+
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

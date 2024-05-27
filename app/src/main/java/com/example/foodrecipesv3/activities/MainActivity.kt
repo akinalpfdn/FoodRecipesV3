@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.PopupMenu
+import android.widget.ProgressBar
 import com.example.foodrecipesv3.R
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -35,6 +36,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.getOverflowIcon()
             ?.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
+
+        val toolBarProgressBar:ProgressBar = findViewById(R.id.toolBarProgressBar )
+
+        // Örnek olarak progress bar'ı %50 yapalım
+        toolBarProgressBar.progress = 70
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 

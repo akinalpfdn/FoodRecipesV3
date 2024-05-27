@@ -146,7 +146,7 @@ class HomeFragment : Fragment() {
                 }
                 val drawableEnd =ContextCompat.getDrawable( context,R.drawable.baseline_arrow_drop_down_24)
 
-                            view.setCompoundDrawablesWithIntrinsicBounds(drawable, null, drawableEnd, null)
+                view.setCompoundDrawablesWithIntrinsicBounds(drawable, null, drawableEnd, null)
             }
         }
 

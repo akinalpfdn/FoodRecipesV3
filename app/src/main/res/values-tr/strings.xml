@@ -33,4 +33,8 @@
     <string name="save_icon">Tarifi Kaydet</string>
     <string name="like_icon">Tarifi Beğen</string>
     <string name="_0">0</string>
+    <string name="assending_icon">Azalan Ikon</string>
+    <string name="descending_icon">Artan Ikon</string>
+    <string name="dropdown_icon">Dropdown Ikon</string>
+    <string name="detailed_recipe">Detaylı Tarif</string>
 </resources>

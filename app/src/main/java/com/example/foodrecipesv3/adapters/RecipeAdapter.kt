@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
+import com.example.foodrecipesv3.fragments.OtherRecipeDialogFragment
 import com.example.foodrecipesv3.fragments.UpdateRecipeDialogFragment
 import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
@@ -140,8 +141,8 @@ class RecipeAdapter(private val recipeList: MutableList<Recipe> ) :
         auth = FirebaseAuth.getInstance()
         // Set the click listener
         holder.itemView.setOnClickListener {
-            val fragment = UpdateRecipeDialogFragment.newInstance(recipe.id)
-             fragment.show((holder.itemView.context as FragmentActivity).supportFragmentManager, "UpdateRecipeDialogFragment")
+            val fragment = OtherRecipeDialogFragment.newInstance(recipe.id)
+             fragment.show((holder.itemView.context as FragmentActivity).supportFragmentManager, "OtherRecipeDialogFragment")
          }
 // Set click listeners for like and save icons
         holder.likeIcon.setOnClickListener {

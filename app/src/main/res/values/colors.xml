@@ -19,5 +19,9 @@
     <color name="colorPrimaryDark">#202020</color><!--toolbar buton rengini degistiriyor-->
     <color name="colorAccent">#FFEB3B</color>
     <color name="your_desired_color">#673AB7</color>
+    <color name="progress_start">#6EB9A5</color>
+    <color name="progress_center">#4A8A9B</color>
+    <color name="progress_end">#4D5A73</color>
+
 
 </resources>

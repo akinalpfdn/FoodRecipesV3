@@ -15,7 +15,8 @@
         app:itemIconTint="@color/bottom_nav_icon"
         app:itemTextColor="@color/bottom_nav_text" >
 
-        <include layout="@layout/order_menu" />
+        <include layout="@layout/order_menu"
+            />
 
         <ImageButton
             android:id="@+id/toggleButton"
