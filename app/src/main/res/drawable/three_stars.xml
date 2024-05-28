@@ -1,0 +1,28 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:left="30dp"
+        android:top="15dp">
+        <bitmap
+            android:src="@drawable/star_shape"
+            android:gravity="center"
+            android:scaleType="center" />
+    </item>
+
+    <item
+        android:left="15dp"
+        android:top="30dp">
+        <bitmap
+            android:src="@drawable/star_shape"
+            android:gravity="center"
+            android:scaleType="center" />
+    </item>
+
+    <item>
+        <bitmap
+            android:src="@drawable/star_shape"
+            android:gravity="center"
+            android:scaleType="center" />
+    </item>
+
+</layer-list>

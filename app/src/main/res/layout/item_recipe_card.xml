@@ -29,6 +29,7 @@
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:text="@string/recipe_title"
+        android:fontFamily="@font/merienda"
         android:textColor="@color/text_color_primary"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -43,6 +44,7 @@
         android:paddingBottom="8dp"
         android:text="@string/some_other_info"
         android:textColor="@color/text_color_secondary"
+        android:visibility="gone"
         android:textSize="14sp" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,17 +58,17 @@
         <ImageView
             android:id="@+id/likeIcon"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
-            android:src="@drawable/ic_heart_outline"
+            android:clickable="true"
             android:contentDescription="@string/like_icon"
-            app:tint="@color/text_color_secondary"
-        android:clickable="true"
-        android:focusable="true" />
+            android:focusable="true"
+            android:src="@drawable/ic_heart_outline"
+            app:tint="@color/text_color_secondary" />
         <ImageView
             android:id="@+id/likeIconFilled"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
             android:src="@drawable/ic_heart_filled"
             android:contentDescription="@string/like_icon"
@@ -78,8 +80,9 @@
         <TextView
             android:id="@+id/likeCount"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginEnd="16dp"
+            android:fontFamily="@font/merienda"
             android:text="@string/_0"
             android:textColor="@color/text_color_secondary"
             android:textSize="18sp" />
@@ -87,7 +90,7 @@
         <ImageView
             android:id="@+id/saveIcon"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
             android:src="@drawable/baseline_bookmark_border_24"
             android:contentDescription="@string/save_icon"
@@ -97,7 +100,7 @@
         <ImageView
             android:id="@+id/saveIconFilled"
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="match_parent"
             android:layout_marginEnd="4dp"
             android:src="@drawable/baseline_bookmark_24"
             android:contentDescription="@string/save_icon"
@@ -109,7 +112,8 @@
         <TextView
             android:id="@+id/savedCount"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/merienda"
             android:text="@string/_0"
             android:textColor="@color/text_color_secondary"
             android:textSize="18sp" />

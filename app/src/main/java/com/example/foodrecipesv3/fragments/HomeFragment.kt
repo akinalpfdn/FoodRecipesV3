@@ -1,7 +1,11 @@
 package com.example.foodrecipesv3.fragments
 
+import CustomTypefaceSpan
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -13,6 +17,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -115,10 +120,18 @@ class HomeFragment : Fragment() {
                 setIcon(view2, position)
                 return view2
             }
-
+            private fun setFontForOptionItem(textView: TextView, typeface: Typeface) {
+                val spannableTitle = SpannableString(textView.text)
+                spannableTitle.setSpan(CustomTypefaceSpan("", typeface), 0, spannableTitle.length, 0)
+                textView.text = spannableTitle
+            }
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view2 = super.getDropDownView(position, convertView, parent) as TextView
                 view2.text = orderOptions[position] // Show full text in dropdown
+                val typeface: Typeface? = ResourcesCompat.getFont(requireContext(), R.font.merienda)
+                typeface?.let { nonNullTypeface ->
+                    setFontForOptionItem(view2, nonNullTypeface)
+                }
                 return view2
             }
 

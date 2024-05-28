@@ -11,6 +11,23 @@
         <item name="colorPrimary">@color/bottom_nav_background</item>
         <item name="colorPrimaryDark">@color/bottom_nav_background</item>
         <item name="colorAccent">@color/bottom_nav_background</item>
+        <item name="textAppearanceBody1">@style/CustomTextAppearance</item>
+        <item name="textAppearanceBody2">@style/CustomTextAppearance</item>
+        <item name="textAppearanceButton">@style/CustomTextAppearance</item>
+        <item name="textAppearanceCaption">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline1">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline2">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline3">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline4">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline5">@style/CustomTextAppearance</item>
+        <item name="textAppearanceHeadline6">@style/CustomTextAppearance</item>
+        <item name="textAppearanceSubtitle1">@style/CustomTextAppearance</item>
+        <item name="textAppearanceSubtitle2">@style/CustomTextAppearance</item>
+    </style>
+
+    <!-- Custom Text Appearance -->
+    <style name="CustomTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/roboto_font_family</item>
     </style>
 
     <style name="CustomShapeAppearance" parent="ShapeAppearance.Material3.SmallComponent">

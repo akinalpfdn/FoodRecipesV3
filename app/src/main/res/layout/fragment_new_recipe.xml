@@ -44,6 +44,7 @@
                     android:layout_centerVertical="true"
                     android:inputType="text"
                     android:maxLength="50"
+                    android:fontFamily="@font/merienda"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:textColorHint="@color/hint_color"
@@ -72,6 +73,7 @@
                     android:layout_marginBottom="8dp"
                     android:gravity="center"
                     android:orientation="horizontal"
+                    android:fontFamily="@font/gloria"
                     android:text="@string/ingredients"
                     android:textColor="@color/text_color_secondary"
                     android:textSize="18sp"
@@ -145,6 +147,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/add_images_up_to_3"
                 android:textSize="18sp"
+                android:fontFamily="@font/gloria"
                 android:textColor="@color/text_color_secondary"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
@@ -170,6 +173,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
                     android:background="@drawable/neumorphism_button"
+                    android:fontFamily="@font/roboto"
                     android:text="@string/add_image"
                     android:textColor="@color/bottom_nav_text" />
 

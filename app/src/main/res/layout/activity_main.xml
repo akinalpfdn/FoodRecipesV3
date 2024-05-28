@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color">
@@ -19,39 +20,40 @@
             android:id="@+id/levelTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:orientation="horizontal"
             android:text="@string/level"
             android:textColor="@color/button_end"
-            android:textSize="18sp"
+            android:fontFamily="@font/caveat"
+            android:textSize="22sp"
             android:textStyle="bold"
-            android:layout_margin="4dp"/>
+            android:paddingEnd="2dp"
+            android:layout_margin="4dp"
+            tools:ignore="RtlSymmetry" />
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="12dp">
-    <ProgressBar
-        android:id="@+id/toolBarProgressBar"
-        style="@style/CustomProgressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:max="100"
-        android:progress="0"
-        android:indeterminate="false"
-        android:visibility="visible"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"/>
+            <ProgressBar
+                android:id="@+id/toolBarProgressBar"
+                style="@style/CustomProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="100"
+                android:progress="0"
+                android:indeterminate="false"
+                android:visibility="visible"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
             <TextView
-            android:id="@+id/scoreTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="3242"
-            android:textColor="@android:color/black"
-            android:textSize="11sp"
-            android:gravity="center" />
+                android:id="@+id/scoreTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="3242"
+                android:textColor="@android:color/black"
+                android:textSize="11sp"
+                android:gravity="center" />
         </RelativeLayout>
-     </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
     <FrameLayout
         android:id="@+id/nav_host_fragment"
         android:layout_width="match_parent"

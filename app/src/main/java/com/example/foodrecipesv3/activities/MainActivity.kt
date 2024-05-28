@@ -1,8 +1,14 @@
 package com.example.foodrecipesv3.activities
 
+import CustomTypefaceSpan
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
+import android.graphics.Typeface
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -20,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
@@ -88,13 +95,25 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+        val menu = navView.menu
+        val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.merienda)
+        typeface?.let { nonNullTypeface ->
+            for (i in 0 until menu.size()) {
+                val menuItem = menu.getItem(i)
+                setFontForMenuItem(menuItem, nonNullTypeface)
+            }
+        }
        // firestore = FirebaseFirestore.getInstance()
 
       //  updateRecipesWithRandomCounts()
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
     }
-
+    private fun setFontForMenuItem(menuItem: MenuItem, typeface: Typeface) {
+        val spannableTitle = SpannableString(menuItem.title)
+        spannableTitle.setSpan(CustomTypefaceSpan("", typeface), 0, spannableTitle.length, 0)
+        menuItem.title = spannableTitle
+    }
     private fun getUserScore(title: TextView, toolBarProgressBar: ProgressBar) {
         fetchScore() {
             var likeScore = likeCount * 1
@@ -121,9 +140,41 @@ class MainActivity : AppCompatActivity() {
                 8 -> "3 Yıldız Şef"
                 else -> "3 Yıldız Şef"
             }
+
+            val drawable = when (totalScore / 100) {
+                0 -> ContextCompat.getDrawable(this, R.drawable.bulasikci)
+                1 -> ContextCompat.getDrawable(this, R.drawable.garson)
+                2 -> ContextCompat.getDrawable(this, R.drawable.cirak)
+                3 -> ContextCompat.getDrawable(this, R.drawable.asci)
+                4 -> ContextCompat.getDrawable(this, R.drawable.sef)
+                5 -> ContextCompat.getDrawable(this, R.drawable.master)
+                6 -> ContextCompat.getDrawable(this, R.drawable.star)
+                7 -> ContextCompat.getDrawable(this, R.drawable.start2)
+                8 -> ContextCompat.getDrawable(this, R.drawable.star3)
+                else -> ContextCompat.getDrawable(this, R.drawable.star3)
+            }
+            drawable?.let {
+                val scaledDrawable = when (totalScore / 100) {
+                    0 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    1 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    2 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    3 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    4 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    5 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    6 -> scaleDrawable(it, 20, 20) // Adjust width and height as needed
+                    7 -> scaleDrawable(it, 35, 20) // Adjust width and height as needed
+                    8 -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                    else -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                }
+                title.setCompoundDrawablesWithIntrinsicBounds(scaledDrawable, null, null, null)
+            }
         }
     }
-
+    private fun scaleDrawable(drawable: Drawable, width: Int, height: Int): Drawable {
+        val bitmap = (drawable as BitmapDrawable).bitmap
+        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true)
+        return BitmapDrawable(resources, scaledBitmap)
+    }
     fun fetchScore(callback: () -> Unit ) {
 
         val userId = auth.currentUser?.uid
