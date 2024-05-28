@@ -3,6 +3,7 @@ package com.example.foodrecipesv3.activities
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,30 +14,40 @@ import android.widget.PopupMenu
 import android.widget.PopupWindow
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.example.foodrecipesv3.R
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
 import com.example.foodrecipesv3.fragments.NewRecipeFragment
+import com.example.foodrecipesv3.models.Recipe
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    //private lateinit var firestore: FirebaseFirestore
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    var likeCount = 0
+    var saveCount = 0
+    var postCount = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //duplicateDocuments(25)
 
+        firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         // Set up the toolbar
         val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -53,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
         // Örnek olarak progress bar'ı %50 yapalım
         toolBarProgressBar.progress = 70
-
+        getUserScore(title,toolBarProgressBar)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -82,6 +93,70 @@ class MainActivity : AppCompatActivity() {
       //  updateRecipesWithRandomCounts()
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
+    }
+
+    private fun getUserScore(title: TextView, toolBarProgressBar: ProgressBar) {
+        fetchScore() {
+            var likeScore = likeCount * 1
+            var saveScore = saveCount * 3
+            var postScore = postCount * 10
+            var totalScore = likeScore + saveScore + postScore
+            if (totalScore > 800) {
+                toolBarProgressBar.progress = 100
+            } else {
+                toolBarProgressBar.progress = totalScore % 100
+            }
+
+            val scoreTextView: TextView = findViewById(R.id.scoreTextView)
+            scoreTextView.text = totalScore.toString()
+            title.text = when (totalScore / 100) {
+                0 -> "Bulaşıkçı"
+                1 -> "Garson"
+                2 -> "Aşçı Çırağı"
+                3 -> "Aşçı"
+                4 -> "Şef"
+                5 -> "Master Şef"
+                6 -> "1 Yıldız Şef"
+                7 -> "2 Yıldız Şef"
+                8 -> "3 Yıldız Şef"
+                else -> "3 Yıldız Şef"
+            }
+        }
+    }
+
+    fun fetchScore(callback: () -> Unit ) {
+
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "User not authenticated", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val query: Query = firestore.collection("recipes")
+            .whereEqualTo("userId", userId)
+
+        query.get()
+            .addOnSuccessListener { documents ->
+                Log.d("FetchScore", "Query successful: ${documents.size()} documents retrieved")
+                if (documents.size() > 0) {
+                    for (document in documents) {
+                        val recipe = document.toObject(Recipe::class.java)
+                        likeCount += recipe.likeCount
+                        saveCount += recipe.savedCount
+                        postCount++
+                    }
+
+                    callback()
+                    // Log the counts for verification
+                    Log.d("RecipeStats", "Like Count: $likeCount, Save Count: $saveCount, Post Count: $postCount")
+                } else {
+                    Log.d("RecipeStats", "No recipes found for user: $userId")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("FirestoreError", "Error loading recipes: ${e.message}")
+                Toast.makeText(this, "Error loading recipe for score: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
     private fun showTooltip(anchorView: View) {
         val inflater = LayoutInflater.from(this)
