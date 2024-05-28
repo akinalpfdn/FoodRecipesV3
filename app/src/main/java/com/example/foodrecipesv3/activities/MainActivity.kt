@@ -3,10 +3,16 @@ package com.example.foodrecipesv3.activities
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.ProgressBar
+import android.widget.TextView
 import com.example.foodrecipesv3.R
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -37,13 +43,18 @@ class MainActivity : AppCompatActivity() {
         toolbar.getOverflowIcon()
             ?.setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_ATOP);
 
+        val title: TextView = findViewById(R.id.levelTitle)
+        title.setOnClickListener {
+            showTooltip(title)
+        }
         val toolBarProgressBar:ProgressBar = findViewById(R.id.toolBarProgressBar )
-
+        toolBarProgressBar.setOnClickListener {
+            showTooltip(title)//bu daha iyi hizalamak içi, barı verince hizalanmiyordu
+        }
         // Örnek olarak progress bar'ı %50 yapalım
         toolBarProgressBar.progress = 70
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
-
         navView.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
@@ -72,6 +83,22 @@ class MainActivity : AppCompatActivity() {
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
     }
+    private fun showTooltip(anchorView: View) {
+        val inflater = LayoutInflater.from(this)
+        val tooltipView = inflater.inflate(R.layout.tooltip_layout, null)
+
+        val tooltipPopup = PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        tooltipPopup.isOutsideTouchable = true
+        tooltipPopup.isFocusable = true
+
+        val location = IntArray(2)
+        anchorView.getLocationOnScreen(location)
+        val xOffset = location[0] - (tooltipView.measuredWidth - anchorView.width) / 2
+        val yOffset = location[1] - tooltipView.measuredHeight - 20
+
+        tooltipPopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, xOffset, yOffset)
+    }
+
     /*
     private fun updateRecipesWithRandomCounts() {
         val recipesRef = firestore.collection("recipes")

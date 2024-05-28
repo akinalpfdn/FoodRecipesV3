@@ -16,6 +16,7 @@
         app:popupTheme="@style/CustomPopupMenu"
         android:elevation="8dp" >
         <TextView
+            android:id="@+id/levelTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
