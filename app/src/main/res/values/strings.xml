@@ -42,4 +42,9 @@
         <item>Like Count</item>
         <item>Save Count</item>
     </string-array>
+    <string-array name="search_options">
+        <item>Title</item>
+        <item>Hashtag</item>
+        <item>Ingredients</item>
+    </string-array>
 </resources>

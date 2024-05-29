@@ -80,9 +80,9 @@ class MainActivity : AppCompatActivity() {
                     return@setOnNavigationItemSelectedListener true
                 }
                 R.id.navigation_favorites -> {
-                    //loadFragment(FavoritesFragment())
-                   // return@setOnNavigationItemSelectedListener true
-                    true
+                    loadFragment(FavoritesFragment())
+                    return@setOnNavigationItemSelectedListener true
+                    //true
                 }
                 R.id.navigation_my_recipes -> {
                     loadFragment(MyRecipesFragment())
@@ -212,6 +212,41 @@ class MainActivity : AppCompatActivity() {
     private fun showTooltip(anchorView: View) {
         val inflater = LayoutInflater.from(this)
         val tooltipView = inflater.inflate(R.layout.tooltip_layout, null)
+        val lvl1TextView: TextView = tooltipView.findViewById(R.id.lvl1)
+        val lvl2TextView: TextView = tooltipView.findViewById(R.id.lvl2)
+        val lvl3TextView: TextView = tooltipView.findViewById(R.id.lvl3)
+        val lvl4TextView: TextView = tooltipView.findViewById(R.id.lvl4)
+        val lvl5TextView: TextView = tooltipView.findViewById(R.id.lvl5)
+        val lvl6TextView: TextView = tooltipView.findViewById(R.id.lvl6)
+        val lvl7TextView: TextView = tooltipView.findViewById(R.id.lvl7)
+        val lvl8TextView: TextView = tooltipView.findViewById(R.id.lvl8)
+        val textViewList = listOf(
+            lvl1TextView,lvl1TextView,  lvl2TextView, lvl3TextView,lvl4TextView,
+            lvl5TextView, lvl6TextView,  lvl7TextView, lvl8TextView
+        )
+        val images = listOf(
+            R.drawable.bulasikci, R.drawable.garson, R.drawable.cirak, R.drawable.asci, R.drawable.sef
+            , R.drawable.master, R.drawable.star, R.drawable.start2, R.drawable.star3
+        )
+
+        for (i in 1 until 9) {
+            val drawable = ContextCompat.getDrawable(this, images[i])
+            drawable?.let {
+                val scaledDrawable = when (i) {
+                    1 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    2 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    3 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    4 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
+                    5 -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                    6 -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                    7 -> scaleDrawable(it, 30, 18) // Adjust width and height as needed
+                    8 -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                    else -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                }
+                textViewList[i].setCompoundDrawablesWithIntrinsicBounds(scaledDrawable, null, null, null)
+            }
+        }
+
 
         val tooltipPopup = PopupWindow(tooltipView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         tooltipPopup.isOutsideTouchable = true

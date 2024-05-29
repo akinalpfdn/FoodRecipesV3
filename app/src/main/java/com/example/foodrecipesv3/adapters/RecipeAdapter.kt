@@ -11,12 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.fragments.OtherRecipeDialogFragment
-import com.example.foodrecipesv3.fragments.UpdateRecipeDialogFragment
 import com.example.foodrecipesv3.models.Recipe
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class RecipeAdapter(private val recipeList: MutableList<Recipe> ) :
+class RecipeAdapter(private val recipeList: MutableList<Recipe>, private val onUnsaveClick: (Recipe) -> Unit)  :
     RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder>() {
     private lateinit var firestore: FirebaseFirestore//SQl connection gibi dusunebiliriz
     private lateinit var auth: FirebaseAuth//bu da auth bilgileri icin
@@ -157,6 +156,7 @@ class RecipeAdapter(private val recipeList: MutableList<Recipe> ) :
         }
         holder.saveIconFilled.setOnClickListener {
             holder.handleSave( recipe )
+            onUnsaveClick(recipe)
         }
 
         // Update UI based on the saved state
@@ -180,5 +180,13 @@ class RecipeAdapter(private val recipeList: MutableList<Recipe> ) :
         notifyItemRangeInserted(startPosition, newRecipes.size)
     }
 
+    fun removeRecipe(recipe: Recipe) {
+
+        val position = recipeList.indexOf(recipe)
+        if (position != -1) {
+            recipeList.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
 
 }

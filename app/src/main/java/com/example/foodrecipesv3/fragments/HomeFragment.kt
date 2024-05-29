@@ -5,7 +5,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.SpannableString
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -13,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.SearchView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -78,7 +78,9 @@ class HomeFragment : Fragment() {
 
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recipeAdapter = RecipeAdapter(mutableListOf())
+        recipeAdapter = RecipeAdapter(mutableListOf()) { recipe ->//bu callback funtion oluyor
+
+        }
         recyclerView.adapter = recipeAdapter
 
         //for ordering
@@ -111,7 +113,8 @@ class HomeFragment : Fragment() {
 
          */
 
-        val spinner: Spinner = view.findViewById(R.id.orderSpinner)
+
+
         val orderOptions = resources.getStringArray(R.array.order_options)
 
         val adapter = object : ArrayAdapter<String>(requireContext(), R.layout.spinner_item, orderOptions) {
@@ -267,7 +270,11 @@ class HomeFragment : Fragment() {
                 // Handle the error
                 Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
-                    }
+
+        isLoading = false
+        progressBar?.visibility = View.GONE
+        swipeRefreshLayout.isRefreshing = false
+    }
 
 
     private fun toggleLayout() {
