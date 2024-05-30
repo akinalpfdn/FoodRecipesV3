@@ -11,24 +11,9 @@
         <item name="colorPrimary">@color/bottom_nav_background</item>
         <item name="colorPrimaryDark">@color/bottom_nav_background</item>
         <item name="colorAccent">@color/bottom_nav_background</item>
-        <item name="textAppearanceBody1">@style/CustomTextAppearance</item>
-        <item name="textAppearanceBody2">@style/CustomTextAppearance</item>
-        <item name="textAppearanceButton">@style/CustomTextAppearance</item>
-        <item name="textAppearanceCaption">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline1">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline2">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline3">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline4">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline5">@style/CustomTextAppearance</item>
-        <item name="textAppearanceHeadline6">@style/CustomTextAppearance</item>
-        <item name="textAppearanceSubtitle1">@style/CustomTextAppearance</item>
-        <item name="textAppearanceSubtitle2">@style/CustomTextAppearance</item>
     </style>
 
-    <!-- Custom Text Appearance -->
-    <style name="CustomTextAppearance" parent="TextAppearance.MaterialComponents.Body1">
-        <item name="fontFamily">@font/roboto_font_family</item>
-    </style>
+
 
     <style name="CustomShapeAppearance" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
@@ -37,9 +22,9 @@
         <item name="cornerSizeBottomRight">0dp</item>
         <item name="cornerSizeBottomLeft">0dp</item>
     </style>
-    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+    <style name="SearchViewStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
         <!-- Text color -->
-        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:textColor">@color/black</item>
         <!-- Hint text color -->
         <item name="android:textColorHint">@color/text_color_primary</item>
         <!-- Icon color -->

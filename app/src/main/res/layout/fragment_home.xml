@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:backgroundTint="@color/bottom_nav_background"
+        android:gravity="center_vertical"
         app:itemIconTint="@color/bottom_nav_icon"
         app:itemTextColor="@color/bottom_nav_text" >
 
