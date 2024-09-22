@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,13 +23,16 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.UpdateImageSliderAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-class UpdateRecipeDialogFragment : DialogFragment() {
+class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
 
     private val imageUris: MutableList<Uri> = mutableListOf()
     private val imageUrls: MutableList<String> = mutableListOf()
@@ -77,8 +81,6 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         recipeId = arguments?.getString(ARG_RECIPE_ID) ?: throw IllegalArgumentException("Recipe ID must be passed to UpdateRecipeDialogFragment")
 
 
-
-
     }
     override fun onStart() {
         super.onStart()
@@ -87,10 +89,37 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             val displayMetrics = DisplayMetrics()
             val display = activity?.windowManager?.defaultDisplay
             display?.getMetrics(displayMetrics)
-            val height = (displayMetrics.heightPixels * 0.7).toInt()
-            val width = (displayMetrics.widthPixels * 0.9).toInt()
+            val height = (displayMetrics.heightPixels * 0.85).toInt()
+            val width = (displayMetrics.widthPixels * 1)//.toInt()
             dialog.window?.setLayout(width, height)
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            // Set the gravity to bottom so the dialog will appear at the bottom of the screen
+            val layoutParams = dialog.window?.attributes
+            layoutParams?.gravity = Gravity.BOTTOM
+            dialog.window?.attributes = layoutParams
+
+            // Explicitly set the window animations here
+            dialog.window?.setWindowAnimations(R.style.DialogSlideAnimation)
+            // Apply slide-up animation
+            dialog.window?.attributes?.windowAnimations = R.style.DialogSlideAnimation
+            // Apply a flag to ensure it respects the animations
+            dialog.window?.setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+            )
+            // Get the bottom sheet view
+            val dialog = dialog as? com.google.android.material.bottomsheet.BottomSheetDialog
+            val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
+            // Set the bottom sheet to expand fully on opening
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.peekHeight = ViewGroup.LayoutParams.MATCH_PARENT // Optional: make it fully expanded by default
+
+                behavior.skipCollapsed = true
+            }
         }
     }
     override fun onCreateView(
@@ -331,6 +360,11 @@ class UpdateRecipeDialogFragment : DialogFragment() {
         }
     }
 
+    fun generateSearchTerms(input: String): List<String> {
+        return input.toLowerCase().split("\\s+".toRegex()) // Split by whitespace and convert to lowercase
+            .map { it.filter { char -> char.isLetter() } } // Remove non-alphanumeric characters
+            .distinct() // Remove duplicates
+    }
     private fun updateRecipe(title: String, hashtags: String, description: String, ingredientContainer: LinearLayout, imageUris: List<Uri>) {
         progressBar?.visibility = View.VISIBLE // Show spinner
 
@@ -356,7 +390,10 @@ class UpdateRecipeDialogFragment : DialogFragment() {
             "hashtags" to hashtags,
             "userId" to userId,
             "images" to currentRecipe.images.toMutableList(),
-            "timestamp" to FieldValue.serverTimestamp()
+            "titleTerms" to generateSearchTerms(title),
+            "ingredientTerms" to ingredients.flatMap { generateSearchTerms(it) }.toSet().toList(), // Flatten and remove duplicates across all ingredients
+            "timestamp" to FieldValue.serverTimestamp(),
+            "isApproved" to false
         )
         val updatedHashtags = hashtags.split(" ")
             .filter { it.isNotEmpty() && it.matches(Regex("^#[A-Za-z0-9_]+$")) } // Only include valid hashtags

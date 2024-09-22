@@ -128,16 +128,28 @@ class RecipeAdapter(private val recipeList: MutableList<Recipe>, private val onU
         return RecipeViewHolder(view)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: RecipeViewHolder, position: Int) {
         val recipe = recipeList[position]
         holder.titleTextView.text = recipe.title
         holder.descriptionTextView.text = recipe.description
-        holder.viewPager.adapter = ImageSliderAdapter(holder.itemView.context, recipe.images)
+        holder.viewPager.adapter = ImageSliderAdapter(holder.itemView.context, recipe.images,recipe.id,true,true)
         // Set like and save counts
         holder.likeCount.text = recipe.likeCount.toString()
         holder.savedCount.text = recipe.savedCount.toString()
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+/*
+// Set the click listener
+        holder.viewPager.setOnClickListener {
+            val fragment = OtherRecipeDialogFragment.newInstance(recipe.id)
+            fragment.show((holder.itemView.context as FragmentActivity).supportFragmentManager, "OtherRecipeDialogFragment")
+        }
+
+
+ */
+
+
         // Set the click listener
         holder.itemView.setOnClickListener {
             val fragment = OtherRecipeDialogFragment.newInstance(recipe.id)

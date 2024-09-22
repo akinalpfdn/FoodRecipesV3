@@ -5,46 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_gradient">
+    <!--
+           <RelativeLayout
+               android:id="@+id/topRow"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="horizontal"
+               app:backgroundTint="@color/bottom_nav_background"
+               android:gravity="center_vertical"
+               app:itemIconTint="@color/bottom_nav_icon"
+               app:itemTextColor="@color/botav_text" >
 
-    <RelativeLayout
-        android:id="@+id/topRow"
-        android:layout_width="match_parent"
+                           <include layout="@layout/order_menu"
+                               />
+
+                        <ImageButton
+                            android:id="@+id/toggleButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/toogle_grid_view"
+                            android:src="@drawable/one_column"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_alignParentEnd="true"
+                            android:layout_margin="8dp" />
+                    </RelativeLayout>
+    -->
+                    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                        android:id="@+id/swipeRefreshLayout"
+                        android:layout_width="match_parent"
+                        android:layout_below="@id/topRow"
+                        android:layout_height="match_parent">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_above="@id/nav_view"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:padding="0dp"
+                            tools:ignore="NotSibling" />
+
+                    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ImageButton
+        android:id="@+id/toggleButton"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:backgroundTint="@color/bottom_nav_background"
-        app:itemIconTint="@color/bottom_nav_icon"
-        app:itemTextColor="@color/bottom_nav_text" >
+        android:contentDescription="@string/toogle_grid_view"
+        android:src="@drawable/one_column"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="12dp" />
 
-        <include layout="@layout/order_menu"
-            />
-
-        <ImageButton
-            android:id="@+id/toggleButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/toogle_grid_view"
-            android:src="@drawable/two_column"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="8dp" />
-    </RelativeLayout>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_below="@id/topRow"
-        android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/nav_view"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="0dp"
-            android:padding="0dp"
-            tools:ignore="NotSibling" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
-</RelativeLayout>
+                </RelativeLayout>

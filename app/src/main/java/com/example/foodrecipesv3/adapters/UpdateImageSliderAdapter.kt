@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodrecipesv3.R
@@ -30,7 +31,12 @@ class UpdateImageSliderAdapter(
         } else {
             val urlPosition = position - imageUris.size
             Glide.with(context).load(imageUrls[urlPosition]).into(holder.imageView)
+            holder.imageView.setOnClickListener {
+                val fragment = FullImageDialogFragment.newInstance(imageUrls[position])
+                fragment.show((context as FragmentActivity).supportFragmentManager, "FullImageDialog")
+            }
         }
+
 
         holder.deleteButton.setOnClickListener {
             if (position < imageUris.size) {

@@ -12,6 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodRecipesV3"
+        android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
+        android:configChanges="orientation|keyboardHidden|screenSize"
         tools:targetApi="31">
 
         <activity android:name=".activities.RegisterActivity"/>

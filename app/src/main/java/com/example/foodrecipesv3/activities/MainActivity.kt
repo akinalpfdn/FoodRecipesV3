@@ -28,6 +28,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import com.example.foodrecipesv3.fragments.ApproveFragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
@@ -69,6 +70,31 @@ class MainActivity : AppCompatActivity() {
         toolBarProgressBar.setOnClickListener {
             showTooltip(title)//bu daha iyi hizalamak içi, barı verince hizalanmiyordu
         }
+        //admin ekrani atama
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        if (currentUser != null) {
+            val userId = currentUser.uid
+            val userEmail = currentUser.email
+
+            // Query Firestore for the list of admin user IDs
+            val db = FirebaseFirestore.getInstance()
+            val docRef = db.collection("admins").document("roles")
+
+            docRef.get().addOnSuccessListener { document ->
+                if (document != null) {
+                    val adminUIDs = document.get("adminUIDs") as? List<String>
+                    val adminEmails = document.get("adminEmails") as? List<String>
+
+                    if ((adminUIDs != null && adminUIDs.contains(userId)) ||
+                        (adminEmails != null && adminEmails.contains(userEmail))) {
+                        // User is an admin, add the admin menu item
+                        addAdminMenuItem()
+                    }
+                }
+            }
+        }
+
+
         // Örnek olarak progress bar'ı %50 yapalım
         toolBarProgressBar.progress = 70
         getUserScore(title,toolBarProgressBar)
@@ -90,6 +116,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.navigation_new_recipe -> {
                     loadFragment(NewRecipeFragment())
+                    return@setOnNavigationItemSelectedListener true
+                }
+                 R.id.navigation_admin -> {
+                    loadFragment(ApproveFragment())
                     return@setOnNavigationItemSelectedListener true
                 }
             }
@@ -140,7 +170,7 @@ class MainActivity : AppCompatActivity() {
                 8 -> "3 Yıldız Şef"
                 else -> "3 Yıldız Şef"
             }
-
+            title.setTextColor(R.color.bottom_nav_text)
             val drawable = when (totalScore / 100) {
                 0 -> ContextCompat.getDrawable(this, R.drawable.bulasikci)
                 1 -> ContextCompat.getDrawable(this, R.drawable.garson)
@@ -169,6 +199,16 @@ class MainActivity : AppCompatActivity() {
                 title.setCompoundDrawablesWithIntrinsicBounds(scaledDrawable, null, null, null)
             }
         }
+    }
+    fun addAdminMenuItem() {
+        // Assuming you're using a BottomNavigationView
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.nav_view)
+        bottomNavigationView.menu.add(
+            Menu.NONE, // groupId
+            R.id.navigation_admin, // itemId (you need to define this ID)
+            1, // order
+            R.string.admin // title
+        ).setIcon(R.drawable.baseline_check_24) // Add an icon if necessary
     }
     private fun scaleDrawable(drawable: Drawable, width: Int, height: Int): Drawable {
         val bitmap = (drawable as BitmapDrawable).bitmap
@@ -329,6 +369,7 @@ class MainActivity : AppCompatActivity() {
                 logout()
                 true
             }
+            /*
             R.id.menu_light_mode -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 true
@@ -337,6 +378,7 @@ class MainActivity : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 true
             }
+             */
             else -> super.onOptionsItemSelected(item)
         }
     }

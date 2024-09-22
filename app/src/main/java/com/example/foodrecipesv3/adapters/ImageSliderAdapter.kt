@@ -6,11 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodrecipesv3.R
+import com.example.foodrecipesv3.fragments.OtherRecipeDialogFragment
+import com.example.foodrecipesv3.fragments.UpdateRecipeDialogFragment
 
-class ImageSliderAdapter(private val context: Context, private val imageList: List<String>) :
+class ImageSliderAdapter(
+    private val context: Context,
+    private val imageList: List<String>,
+    private val recipeId: String,
+    private val isClickable: Boolean,
+    private val isOtherRecipe: Boolean
+) :
     RecyclerView.Adapter<ImageSliderAdapter.SliderViewHolder>() {
 
     private var currentPosition = 0
@@ -24,7 +33,32 @@ class ImageSliderAdapter(private val context: Context, private val imageList: Li
         Glide.with(context)
             .load(imageList[position])
             .into(holder.imageView)
-
+        if(isClickable)
+        {
+            if(isOtherRecipe)
+            {
+                holder.imageView.setOnClickListener {
+                    val fragment = OtherRecipeDialogFragment.newInstance(recipeId)
+                    fragment.show((context as FragmentActivity).supportFragmentManager, "OtherRecipeDialogFragment")
+                }
+            }
+            else {
+                holder.imageView.setOnClickListener {
+                    val fragment = UpdateRecipeDialogFragment.newInstance(recipeId)
+                    fragment.show(
+                        (holder.itemView.context as FragmentActivity).supportFragmentManager,
+                        "UpdateRecipeDialogFragment"
+                    )
+                }
+            }
+        }
+        else
+        {
+            holder.imageView.setOnClickListener {
+                val fragment = FullImageDialogFragment.newInstance(imageList[position])
+                fragment.show((context as FragmentActivity).supportFragmentManager, "FullImageDialog")
+            }
+        }
         // Indicator noktalarını ekleme
         if (holder.linearLayout.childCount == 0) {
             for (i in imageList.indices) {

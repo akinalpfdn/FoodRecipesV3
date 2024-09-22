@@ -15,6 +15,9 @@ data class Recipe(
     var id: String = "",
     var isLiked: Boolean,
     var isSaved: Boolean,
+    var isApproved: Boolean = false,
+    var titleTerms:List<String> = emptyList(),
+    var ingredientTerms:List<String> = emptyList(),
 
     ) {
 

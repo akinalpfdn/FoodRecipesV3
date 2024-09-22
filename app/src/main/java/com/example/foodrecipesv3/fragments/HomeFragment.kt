@@ -9,6 +9,7 @@ import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
@@ -220,14 +221,7 @@ class HomeFragment : Fragment() {
             paramsSpinner.width = 0 // Use 0dp to respect weights in LinearLayout
             spinnerSearchOptions.layoutParams = paramsSpinner
             spinnerSearchOptions.visibility = View.GONE
-/*
-            // Adjust SearchView layout parameters
-            val params = searchView.layoutParams as LinearLayout.LayoutParams
-            params.weight = 1.0f // Ensure it uses the space responsibly
-            params.width = 0 // Use 0dp to respect weights in LinearLayout
-            searchView.layoutParams = params
-            eski kod
-            */
+
             val params = spinnerSearchOptions.layoutParams
             params.width = halfScreenWidth.toInt()
                // 30.dpToPx(requireContext())  // Convert 30 dp to pixel
@@ -245,7 +239,20 @@ class HomeFragment : Fragment() {
 
 
         }
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    fetchRecipes(true, query)
+                    hideKeyboard()
+                }
+                return true
+            }
 
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Optionally handle live query changes
+                return false
+            }
+        })
         searchView.setOnCloseListener {
             // User has clicked the close button to collapse the SearchView
             val params = searchView.layoutParams as LinearLayout.LayoutParams
@@ -260,6 +267,17 @@ class HomeFragment : Fragment() {
         }
 
     }
+    fun hideKeyboard() {
+        val inputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        // Find the currently focused view, so we can grab the correct window token from it.
+        var view = activity?.currentFocus
+        // If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = View(activity)
+        }
+        inputMethodManager?.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     fun Int.dpToPx(context: Context): Int = (this * context.resources.displayMetrics.density).toInt()
     private fun setupOrderMenu() {
         orderSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -285,7 +303,12 @@ class HomeFragment : Fragment() {
         }
 
     }
-    private fun fetchRecipes(initialLoad: Boolean) {
+    fun generateSearchTerms(input: String): List<String> {
+        return input.toLowerCase().split("\\s+".toRegex()) // Split by whitespace and convert to lowercase
+            .map { it.filter { char -> char.isLetterOrDigit() } } // Remove non-alphanumeric characters
+            .distinct() // Remove duplicates
+    }
+    private fun fetchRecipes(initialLoad: Boolean, queryText: String = "") {
         if (isLoading) return
         isLoading = true
 
@@ -293,7 +316,19 @@ class HomeFragment : Fragment() {
         val userId = auth.currentUser?.uid
 
         var query: Query = firestore.collection("recipes")
-            .whereNotEqualTo("userId", userId)
+            //.whereNotEqualTo("userId", userId)
+            .whereEqualTo("isApproved", true)
+        val searchOption = spinnerSearchOptions.selectedItem.toString()
+        if(queryText!="") {
+            when (searchOption) {
+                "Title" -> query =
+                    query.whereArrayContainsAny("titleTerms", generateSearchTerms(queryText))
+
+                "Hashtag" -> query = query.whereArrayContains("hashtags", queryText.toLowerCase())
+                "Ingredients" -> query =
+                    query.whereArrayContainsAny("ingredientTerms", generateSearchTerms(queryText))
+            }
+        }
 
         when (orderSpinner.selectedItem.toString()) {
             "Date" -> query = query.orderBy("timestamp", if (isAscending) Query.Direction.ASCENDING else Query.Direction.DESCENDING)

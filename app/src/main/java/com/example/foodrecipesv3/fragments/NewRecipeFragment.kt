@@ -295,7 +295,11 @@ class NewRecipeFragment : Fragment() {
     }
 
 
-
+    fun generateSearchTerms(input: String): List<String> {
+        return input.toLowerCase().split("\\s+".toRegex()) // Split by whitespace and convert to lowercase
+            .map { it.filter { char -> char.isLetter() } } // Remove non-alphanumeric characters
+            .distinct() // Remove duplicates
+    }
 
     private fun saveRecipe(title: String, hashtags: String,description: String,ingredientContainer: LinearLayout, imageUris: List<Uri>) {
         progressBar?.visibility = View.VISIBLE // Spinner'ı göster
@@ -323,7 +327,10 @@ class NewRecipeFragment : Fragment() {
             "hashtags" to hashtags,
             "userId" to userId,
             "images" to mutableListOf<String>(),
+            "titleTerms" to generateSearchTerms(title),
+            "ingredientTerms" to ingredients.flatMap { generateSearchTerms(it) }.toSet().toList(), // Flatten and remove duplicates across all ingredients
             "timestamp" to FieldValue.serverTimestamp() // Adding the timestamp field
+            ,"isApproved" to false
         )
 
         val recipeRef = firestore.collection("recipes").document()

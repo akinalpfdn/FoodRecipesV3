@@ -38,9 +38,9 @@ class WelcomeActivity : AppCompatActivity()  {
 
         auth = FirebaseAuth.getInstance()
 
-        val goToLoginButton: Button = findViewById(R.id.goToLoginButton)
-        val goToRegisterButton: Button = findViewById(R.id.goToRegisterButton)
-
+       // val goToLoginButton: Button = findViewById(R.id.goToLoginButton)
+      //  val goToRegisterButton: Button = findViewById(R.id.goToRegisterButton)
+/*
         goToLoginButton.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             //val intent = Intent(this, MainActivity::class.java)
@@ -51,7 +51,7 @@ class WelcomeActivity : AppCompatActivity()  {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
         }
-
+*/
         // Check if the user is already signed in
         val firebaseUser: FirebaseUser? = FirebaseAuth.getInstance().currentUser
         if (firebaseUser != null) {
@@ -79,8 +79,11 @@ class WelcomeActivity : AppCompatActivity()  {
         finish()
     }
         private fun signInWithGoogle() {
-            val signInIntent = googleSignInClient.signInIntent
-            startActivityForResult(signInIntent, RC_SIGN_IN)
+            googleSignInClient.signOut().addOnCompleteListener {
+                // After signing out the current account, start the sign-in intent
+                val signInIntent = googleSignInClient.signInIntent
+                startActivityForResult(signInIntent, RC_SIGN_IN)
+            }
         }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

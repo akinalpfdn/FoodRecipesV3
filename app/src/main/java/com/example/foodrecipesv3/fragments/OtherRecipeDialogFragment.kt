@@ -1,41 +1,30 @@
 package com.example.foodrecipesv3.fragments
 
-import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.view.GestureDetector
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.ImageSliderAdapter
-import com.example.foodrecipesv3.adapters.UpdateImageSliderAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 
-class OtherRecipeDialogFragment : DialogFragment() {
+class OtherRecipeDialogFragment : BottomSheetDialogFragment() {
 
     private val imageUris: MutableList<Uri> = mutableListOf()
     private val imageUrls: MutableList<String> = mutableListOf()
@@ -65,7 +54,7 @@ class OtherRecipeDialogFragment : DialogFragment() {
     private lateinit var ingredientContainer: LinearLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var indicatorLayout: LinearLayout
-
+    private lateinit var gestureDetector: GestureDetector
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         storageReference = FirebaseStorage.getInstance().reference
@@ -85,10 +74,45 @@ class OtherRecipeDialogFragment : DialogFragment() {
             val displayMetrics = DisplayMetrics()
             val display = activity?.windowManager?.defaultDisplay
             display?.getMetrics(displayMetrics)
-            val height = (displayMetrics.heightPixels * 0.7).toInt()
-            val width = (displayMetrics.widthPixels * 0.9).toInt()
+            val height = (displayMetrics.heightPixels * 0.85).toInt()
+            val width = (displayMetrics.widthPixels * 1)//.toInt()
             dialog.window?.setLayout(width, height)
             dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+            // Set the gravity to bottom so the dialog will appear at the bottom of the screen
+            val layoutParams = dialog.window?.attributes
+            layoutParams?.gravity = Gravity.BOTTOM
+            dialog.window?.attributes = layoutParams
+
+            // Explicitly set the window animations here
+            dialog.window?.setWindowAnimations(R.style.DialogSlideAnimation)
+            // Apply slide-up animation
+            dialog.window?.attributes?.windowAnimations = R.style.DialogSlideAnimation
+            // Apply a flag to ensure it respects the animations
+            dialog.window?.setFlags(
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
+                WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED
+            )
+            // Get the bottom sheet view
+            val dialog = dialog as? com.google.android.material.bottomsheet.BottomSheetDialog
+            val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
+            // Set the bottom sheet to expand fully on opening
+            bottomSheet?.let {
+                val behavior = BottomSheetBehavior.from(it)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.peekHeight = ViewGroup.LayoutParams.MATCH_PARENT // Optional: make it fully expanded by default
+                behavior.skipCollapsed = true
+            }
+            /*
+            // Add logging to check if the animation is being set
+            val attrs = dialog.window?.attributes
+            if (attrs?.windowAnimations == R.style.DialogSlideAnimation) {
+                Toast.makeText(requireContext(), "Animation set!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Animation not set", Toast.LENGTH_SHORT).show()
+            }
+             */
         }
     }
     override fun onCreateView(
@@ -110,9 +134,10 @@ class OtherRecipeDialogFragment : DialogFragment() {
 
 
 
-        viewPager.adapter = ImageSliderAdapter(requireContext(),  imageUrls)
+        viewPager.adapter = ImageSliderAdapter(requireContext(), imageUrls, recipeId, false, true)
 
         loadRecipeData()
+
     }
 
     private fun loadRecipeData() {

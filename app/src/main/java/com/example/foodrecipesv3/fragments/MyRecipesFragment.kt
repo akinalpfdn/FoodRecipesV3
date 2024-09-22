@@ -112,6 +112,7 @@ class MyRecipesFragment : Fragment() {
             .setNegativeButton("No", null)
             .show()
     }
+
     private fun deleteRecipe(recipe: Recipe) {
         progressBar?.visibility = View.VISIBLE
         firestore.collection("recipes").document(recipe.id)
@@ -169,8 +170,5 @@ class MyRecipesFragment : Fragment() {
             }
     }
 
-    private fun openUpdateRecipeFragment(recipeId: String) {
-        val fragment = UpdateRecipeDialogFragment.newInstance(recipeId)
-        fragment.show(parentFragmentManager, "UpdateRecipeDialogFragment")
-    }
+
 }
