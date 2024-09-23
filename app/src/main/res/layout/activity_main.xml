@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/level"
-            android:textColor="@color/button_end"
+            android:textColor="@color/bottom_nav_text"
             android:fontFamily="@font/caveat"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -66,11 +66,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu"
         app:backgroundTint="@color/bottom_nav_background"
         app:itemIconTint="@color/bottom_nav_icon"
         app:itemTextColor="@color/bottom_nav_text"
-        app:labelVisibilityMode="labeled" />
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu" />
 
     <ProgressBar
         android:id="@+id/progressBar"

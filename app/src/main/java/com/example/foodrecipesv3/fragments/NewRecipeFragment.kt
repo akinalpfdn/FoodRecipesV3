@@ -11,6 +11,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -221,6 +222,15 @@ class NewRecipeFragment : Fragment() {
             hint = getString(R.string.add_an_ingredient)
             setTextColor(ContextCompat.getColor(requireContext(), R.color.text_color_primary))
             setHintTextColor(ContextCompat.getColor(requireContext(), R.color.hint_color))
+            // Add listener to detect "Enter" key press
+             setOnKeyListener { v, keyCode, event ->
+                if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    addNewIngredientRow(ingredientContainer) // Add a new ingredient row when "Enter" is pressed
+                    true // Consume the event
+                } else {
+                    false
+                }
+            }
         }
 
         val deleteButton = ImageButton(requireContext()).apply {

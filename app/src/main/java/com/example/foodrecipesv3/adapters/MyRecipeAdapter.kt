@@ -24,6 +24,8 @@ class MyRecipeAdapter(private val recipeList: MutableList<Recipe>, private val o
         val recipe = recipeList[position]
         holder.titleTextView.text = recipe.title
         holder.descriptionTextView.text = recipe.description
+        holder.likeCount.text = recipe.likeCount.toString()
+        holder.savedCount.text = recipe.savedCount.toString()
         holder.viewPager.adapter = ImageSliderAdapter(
             holder.itemView.context,
             recipe.images,
@@ -74,5 +76,7 @@ class MyRecipeAdapter(private val recipeList: MutableList<Recipe>, private val o
         val descriptionTextView: TextView = itemView.findViewById(R.id.recipeDescription)
         val viewPager: ViewPager2 = itemView.findViewById(R.id.viewPager)
         val deleteButton: ImageButton = itemView.findViewById(R.id.deleteButton)
+        var likeCount: TextView = itemView.findViewById(R.id.likeCount)
+        var savedCount: TextView = itemView.findViewById(R.id.savedCount)
     }
 }
