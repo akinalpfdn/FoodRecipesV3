@@ -30,6 +30,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.utils.PreferenceHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -64,7 +65,7 @@ class HomeFragment : Fragment() {
 
         toggleButton = view.findViewById(R.id.toggleButton)
         toggleButton.setOnClickListener {
-            toggleLayout()
+            toggleLayout(false)
         }
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -72,6 +73,7 @@ class HomeFragment : Fragment() {
             fetchRecipes(true)
         }
 
+        isGridLayout = PreferenceHelper.loadLayoutPreference(requireContext())
         return view
     }
 
@@ -109,6 +111,7 @@ class HomeFragment : Fragment() {
                 }
             }
         })
+        toggleLayout(true)
         /*
         val adapter = ArrayAdapter.createFromResource(
             requireContext(),
@@ -399,9 +402,10 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout.isRefreshing = false
     }
 
-
-    private fun toggleLayout() {
-        isGridLayout = !isGridLayout
+    private fun toggleLayout(initialLoad: Boolean) {
+        if(!initialLoad) {
+            isGridLayout = !isGridLayout
+        }
         if (isGridLayout) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
             toggleButton.setImageResource(R.drawable.two_column)
@@ -410,5 +414,7 @@ class HomeFragment : Fragment() {
             toggleButton.setImageResource(R.drawable.one_column)
         }
         recipeAdapter.notifyItemRangeChanged(0, recipeAdapter.itemCount)
+        // Save the layout preference to SharedPreferences
+        PreferenceHelper.saveLayoutPreference(requireContext(), isGridLayout)
     }
 }

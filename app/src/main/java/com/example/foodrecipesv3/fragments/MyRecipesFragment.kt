@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.MyRecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.utils.PreferenceHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -44,17 +45,20 @@ class MyRecipesFragment : Fragment() {
         toggleButton = view.findViewById(R.id.toggleButton)
 
         toggleButton.setOnClickListener {
-            toggleLayout()
+            toggleLayout(false)
         }
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         swipeRefreshLayout.setOnRefreshListener {
             fetchRecipes(true)
         }
+        isGridLayout = PreferenceHelper.loadLayoutPreference(requireContext())
         return view
     }
-    private fun toggleLayout() {
-        isGridLayout = !isGridLayout
+    private fun toggleLayout(initialLoad: Boolean) {
+        if(!initialLoad) {
+            isGridLayout = !isGridLayout
+        }
         if (isGridLayout) {
             recyclerView.layoutManager = GridLayoutManager(context, 2)
             toggleButton.setImageResource(R.drawable.two_column)
@@ -63,6 +67,8 @@ class MyRecipesFragment : Fragment() {
             toggleButton.setImageResource(R.drawable.one_column)
         }
         myRecipeAdapter.notifyItemRangeChanged(0, myRecipeAdapter.itemCount)
+        // Save the layout preference to SharedPreferences
+        PreferenceHelper.saveLayoutPreference(requireContext(), isGridLayout)
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -92,6 +98,7 @@ class MyRecipesFragment : Fragment() {
             }
         })
 
+        toggleLayout(true)
         // Set up the FragmentResultListener
         parentFragmentManager.setFragmentResultListener("requestKey", this) { _, bundle ->
             val refresh = bundle.getBoolean("refresh")

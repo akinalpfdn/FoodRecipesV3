@@ -7,9 +7,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="16dp"
+        android:paddingLeft="8dp"
         android:paddingTop="16dp"
-        android:paddingRight="16dp">
+        android:paddingRight="8dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,8 +45,8 @@
                     android:inputType="text"
                     android:maxLength="50"
                     android:fontFamily="@font/merienda"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
                     android:textColorHint="@color/hint_color"
                     android:textColor="@color/text_color_primary"
                     android:textSize="20sp"
@@ -63,8 +63,8 @@
                 android:orientation="vertical"
                 android:background="@drawable/card_background"
                 android:elevation="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
@@ -107,8 +107,8 @@
                 android:layout_marginBottom="16dp"
                 android:autofillHints="recipe"
                 android:background="@drawable/card_background"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:gravity="top"
                 android:elevation="5dp"
                 android:hint="@string/enter_detailed_instructions"
@@ -136,8 +136,8 @@
                 android:background="@drawable/border_background"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
                 android:hint="@string/enter_hashtags"
                 android:textColor="@color/text_color_primary"
                 android:textColorHint="@color/hint_color" />
@@ -148,7 +148,7 @@
                 android:text="@string/add_images_up_to_3"
                 android:textSize="18sp"
                 android:fontFamily="@font/gloria"
-                android:textColor="@color/text_color_secondary"
+                android:textColor="@color/text_color_primary"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp" />
             <View

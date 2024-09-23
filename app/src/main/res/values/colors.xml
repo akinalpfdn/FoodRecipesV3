@@ -3,45 +3,41 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Background Colors -->
-    <color name="background_color">#f5f5f1</color> <!-- Soft off-white for background -->
-    <color name="background_color_start">#FAFAF7</color> <!-- Gradient Start -->
-    <color name="background_color_end">#EDEDEA</color> <!-- Gradient End -->
+    <!-- Background colors -->
+    <color name="background_color">#f7f7f7</color> <!-- Very Light Gray -->
+    <color name="background_color_start">#f9f9f9</color>
+    <color name="background_color_end">#ececec</color> <!-- Subtle gradient for backgrounds -->
 
-    <!-- Card Background -->
-    <color name="card_background">#E5E5E5</color> <!-- Light grey for card background -->
+    <!-- Card background -->
+    <color name="card_background">#FAFAFA</color> <!-- Off White for card background -->
 
-    <!-- Text Colors -->
-    <color name="text_color_primary">#424b39</color> <!-- Darker tone matching the bottom_nav -->
-    <color name="text_color_secondary">#7D8573</color> <!-- Complementary muted greenish tone -->
+    <!-- Text colors -->
+    <color name="text_color_primary">#2b2d42</color> <!-- Dark Gray for main text -->
+    <color name="text_color_secondary">#8d99ae</color> <!-- Light Gray for secondary text -->
 
-    <!-- Bottom Navigation -->
-    <color name="bottom_nav_background">#969d71</color> <!-- Muted green you provided -->
-    <color name="bottom_nav_icon">#FFFFFF</color> <!-- White for icons -->
-    <color name="bottom_nav_text">#FFFFFF</color> <!-- White for text -->
+    <!-- Bottom navigation -->
+    <color name="bottom_nav_background">#C48573</color> <!-- Muted Reddish-Brown -->
+    <color name="bottom_nav_icon">#FFFFFF</color> <!-- White for icons in bottom nav -->
+    <color name="bottom_nav_text">#FFFFFF</color> <!-- White for text in bottom nav -->
 
     <!-- Button colors -->
-    <color name="button_color">#e76f51</color> <!-- Warm Coral for buttons -->
-    <color name="button_start">#e76f51</color> <!-- Gradient start for buttons -->
-    <color name="button_end">#f4a261</color> <!-- Gradient end for buttons -->
+    <color name="button_color">#B5664F</color> <!-- Deep Orange for buttons -->
+    <color name="button_start">#B5664F</color> <!-- Gradient start for buttons -->
+    <color name="button_end">#93513E</color> <!-- Gradient end for buttons -->
 
+    <!-- Hints and icons -->
+    <color name="hint_color">#7C7C7C</color> <!-- Neutral gray for hints -->
 
+    <!-- Primary colors for branding -->
+    <color name="colorPrimary">#264653</color> <!-- Navy Blue for primary branding color -->
+    <color name="colorPrimaryDark">#202020</color> <!-- Dark variant for toolbar -->
+    <color name="colorAccent">#f2e05d</color> <!-- Bright yellow accent for highlights -->
 
-    <!-- Progress Bar Colors -->
-    <color name="progress_start">#F57C00</color> <!-- Bright Orange -->
-    <color name="progress_center">#FFB74D</color> <!-- Lighter Orange -->
-    <color name="progress_end">#42A5F5</color> <!-- Soft Blue for contrast -->
-
-    <!-- Hint Text -->
-    <color name="hint_color">#B2B2A3</color> <!-- Light muted greyish green for hints -->
-
-    <!-- Toolbar/Action Bar Colors -->
-    <color name="colorPrimary">#698B69</color> <!-- Muted greenish grey for toolbar -->
-    <color name="colorPrimaryDark">#202020</color> <!-- Dark grey for Toolbar -->
-    <color name="colorAccent">#42A5F5</color> <!-- Soft blue accent for contrast -->
-
-    <!-- Additional Colors -->
-    <color name="your_desired_color">#673AB7</color> <!-- Purple accent you may want to use elsewhere -->
+    <!-- Progress colors (optional gradient for progress bars) -->
+    <color name="progress_start">#6EB9A5</color> <!-- Greenish teal for progress start -->
+    <color name="progress_center">#4A8A9B</color> <!-- Teal blue for center -->
+    <color name="progress_end">#4D5A73</color> <!-- Darker teal for progress end -->
+    <color name="your_desired_color">#673AB7</color>
 </resources>
 
 

@@ -167,7 +167,7 @@ class ApproveFragment : Fragment() {
     }
     private fun showApproveConfirmationDialog(recipe: Recipe) {
         AlertDialog.Builder(requireContext())
-            .setTitle("Delete Recipe")
+            .setTitle("Approve Recipe")
             .setMessage("Are you sure you want to Approve this recipe?")
             .setPositiveButton("Yes") { dialog, _ ->
                 approveRecipe(recipe)
