@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.AddedImageSliderAdapter
+import com.example.foodrecipesv3.utils.ImageUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -283,8 +284,11 @@ class NewRecipeFragment : Fragment() {
                 if (clipData != null) {
                     for (i in 0 until clipData.itemCount) {
                         val uri = clipData.getItemAt(i).uri
-                        if (imageUris.size <3) {
-                            imageUris.add(uri)
+                        if (imageUris.size < 3) {
+                            val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
+                            resizedImageUri?.let {
+                                imageUris.add(it)
+                            }
                         } else {
                             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
                             break
@@ -292,8 +296,11 @@ class NewRecipeFragment : Fragment() {
                     }
                 } else {
                     intentData.data?.let { uri ->
-                        if (imageUris.size <3) {
-                            imageUris.add(uri)
+                        if (imageUris.size < 3) {
+                            val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
+                            resizedImageUri?.let {
+                                imageUris.add(it)
+                            }
                         } else {
                             Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
                         }

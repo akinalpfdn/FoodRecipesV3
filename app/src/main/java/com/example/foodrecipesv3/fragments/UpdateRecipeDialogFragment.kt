@@ -411,12 +411,15 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                 recipeRef.update(updatedRecipe)
                     .addOnSuccessListener {
                         handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
+                            if (isAdded) {
                             Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-                            progressBar?.visibility = View.GONE // Hide spinner
+                                progressBar?.visibility = View.GONE // Hide spinner
 
-                            parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
-                                putBoolean("refresh", true)
-                            })
+                                parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                                    putBoolean("refresh", true)
+                                })
+                        }
+
                             dismiss() // Dismiss the dialog
                         }
 
