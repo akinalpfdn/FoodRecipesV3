@@ -39,6 +39,7 @@
     <string name="level">Bulaşıkçı</string>
     <string name="admin">Admin</string>
     <string name="approve_recipe">approve</string>
+    <string name="expand_image">expand image</string>
     <string-array name="order_options">
         <item>Date</item>
         <item>Like Count</item>

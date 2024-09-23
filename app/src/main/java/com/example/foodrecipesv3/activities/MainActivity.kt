@@ -4,6 +4,7 @@ import CustomTypefaceSpan
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -27,6 +28,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.foodrecipesv3.fragments.ApproveFragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
@@ -125,6 +127,30 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
+        //detect keyboard and make navbar hiden
+
+        // Detect when the keyboard is opened or closed
+
+
+        // Add the global layout listener to the root view
+        val rootView = findViewById<View>(android.R.id.content)
+        rootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            rootView.getWindowVisibleDisplayFrame(rect)
+
+            // Calculate the height difference between the root view and the visible area
+            val screenHeight = rootView.rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+
+            if (keypadHeight > screenHeight * 0.15) {
+                // If the keypad height is greater than 15% of the screen height, the keyboard is visible
+                navView.visibility = View.GONE
+            } else {
+                // If the keypad height is less than 15% of the screen height, the keyboard is hidden
+                navView.visibility = View.VISIBLE
+            }
+        }
+
         val menu = navView.menu
         val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.merienda)
         typeface?.let { nonNullTypeface ->
@@ -170,7 +196,6 @@ class MainActivity : AppCompatActivity() {
                 8 -> "3 Yıldız Şef"
                 else -> "3 Yıldız Şef"
             }
-            title.setTextColor(R.color.bottom_nav_text)
             val drawable = when (totalScore / 100) {
                 0 -> ContextCompat.getDrawable(this, R.drawable.bulasikci)
                 1 -> ContextCompat.getDrawable(this, R.drawable.garson)

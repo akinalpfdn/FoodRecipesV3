@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentActivity
@@ -59,6 +60,10 @@ class ImageSliderAdapter(
                 fragment.show((context as FragmentActivity).supportFragmentManager, "FullImageDialog")
             }
         }
+        holder.expandButton.setOnClickListener {
+            val fragment = FullImageDialogFragment.newInstance(imageList[position])
+            fragment.show((context as FragmentActivity).supportFragmentManager, "FullImageDialog")
+        }
         // Indicator noktalarını ekleme
         if (holder.linearLayout.childCount == 0) {
             for (i in imageList.indices) {
@@ -91,6 +96,7 @@ class ImageSliderAdapter(
 
     inner class SliderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
+        val expandButton: ImageButton = itemView.findViewById(R.id.expandButton)
         val linearLayout: LinearLayout = itemView.findViewById(R.id.indicatorLayout)
     }
 }

@@ -17,7 +17,7 @@
         android:id="@+id/deleteButton"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_margin="8dp"
+        android:layout_margin="0dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -26,8 +26,8 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp" />
 
 
     <TextView
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:paddingTop="8dp"
+        android:paddingTop="2dp"
         android:paddingRight="8dp"
         android:fontFamily="@font/merienda"
         android:text="@string/recipe_title"
@@ -63,7 +63,7 @@
         android:orientation="horizontal"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="6dp">
 
         <ImageView
             android:id="@+id/likeIcon"

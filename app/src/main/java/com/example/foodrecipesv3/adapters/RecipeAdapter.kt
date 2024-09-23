@@ -139,15 +139,6 @@ class RecipeAdapter(private val recipeList: MutableList<Recipe>, private val onU
         holder.savedCount.text = recipe.savedCount.toString()
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
-/*
-// Set the click listener
-        holder.viewPager.setOnClickListener {
-            val fragment = OtherRecipeDialogFragment.newInstance(recipe.id)
-            fragment.show((holder.itemView.context as FragmentActivity).supportFragmentManager, "OtherRecipeDialogFragment")
-        }
-
-
- */
 
 
         // Set the click listener
