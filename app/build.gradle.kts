@@ -57,10 +57,12 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation (libs.firebase.storage)
+    implementation (libs.firebase.messaging)
 
     implementation(libs.androidx.viewpager2)
     implementation(libs.glide)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.work.runtime.ktx)
     annotationProcessor(libs.compiler)
 
     implementation (libs.play.services.auth)

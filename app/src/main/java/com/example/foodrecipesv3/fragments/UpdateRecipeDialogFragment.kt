@@ -23,6 +23,8 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.UpdateImageSliderAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.utils.ImageUtils
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -183,11 +185,13 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                     currentRecipe = document.toObject(Recipe::class.java)!!
                     fetchHashtagsForRecipe(currentRecipe)
                 } else {
-                    Toast.makeText(requireContext(), "Recipe not found", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Recipe not found")
+                   // Toast.makeText(requireContext(), "Recipe not found", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error loading recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error loading recipe: ${e.message}")
+                //Toast.makeText(requireContext(), "Error loading recipe: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
     private fun fetchHashtagsForRecipe(recipe: Recipe) {
@@ -199,7 +203,8 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                 fillRecipeData(recipe, hashtags.joinToString(" "))
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error loading hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error loading hashtags: ${e.message}")
+               // Toast.makeText(requireContext(), "Error loading hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
     private fun fillRecipeData(recipe: Recipe, hashtags: String) {
@@ -317,8 +322,9 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun selectImage() {
-        if (imageUris.size + imageUrls.size >= 3) {
-            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+        if (imageUris.size + imageUrls.size >= 10) {
+            ToastUtils.showToast(this,"You can only add up to 10 images.")
+           // Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -339,19 +345,28 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                 if (clipData != null) {
                     for (i in 0 until clipData.itemCount) {
                         val uri = clipData.getItemAt(i).uri
-                        if (imageUris.size + imageUrls.size < 3) {
-                            imageUris.add(uri)
+                        if (imageUris.size + imageUrls.size < 10) {
+
+                            val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
+                            resizedImageUri?.let {
+                                imageUris.add(it)
+                            }
                         } else {
-                            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+                            ToastUtils.showToast(this,"You can only add up to 10 images.")
+                           // Toast.makeText(requireContext(), "You can only add up to 10 images.", Toast.LENGTH_SHORT).show()
                             break
                         }
                     }
                 } else {
                     intentData.data?.let { uri ->
-                        if (imageUris.size + imageUrls.size < 3) {
-                            imageUris.add(uri)
+                        if (imageUris.size + imageUrls.size < 10) {
+                            val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
+                            resizedImageUri?.let {
+                                imageUris.add(it)
+                            }
                         } else {
-                            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+                            ToastUtils.showToast(this,"You can only add up to 10 images.")
+                            //Toast.makeText(requireContext(), "You can only add up to 10 images.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -370,9 +385,9 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
 
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-             progressBar?.visibility = View.GONE // Hide spinner
-
+            ToastUtils.showToast(this,"User not logged in")
+            //Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            progressBar?.visibility = View.GONE // Hide spinner
             return
         }
 
@@ -395,6 +410,7 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
             "timestamp" to FieldValue.serverTimestamp(),
             "isApproved" to false
         )
+
         val updatedHashtags = hashtags.split(" ")
             .filter { it.isNotEmpty() && it.matches(Regex("^#[A-Za-z0-9_]+$")) } // Only include valid hashtags
         val currentHashtags = currentRecipe.hashtags.split(" ")
@@ -411,27 +427,18 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                 recipeRef.update(updatedRecipe)
                     .addOnSuccessListener {
                         handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
-                            if (isAdded) {
-                            Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
-                                progressBar?.visibility = View.GONE // Hide spinner
+                            ToastUtils.showToast(this,"Recipe updated successfully")
+                            progressBar?.visibility = View.GONE // Hide spinner
 
-                                parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
-                                    putBoolean("refresh", true)
-                                })
-                        }
-
+                            parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
+                                putBoolean("refresh", true)
+                            })
                             dismiss() // Dismiss the dialog
                         }
-
-                        parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
-                            putBoolean("refresh", true)
-                        })
-                        dismiss() // Dismiss the dialog
                     }
                     .addOnFailureListener { e ->
-                        Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                        ToastUtils.showToast(this,"Error updating recipe: ${e.message}")
                         progressBar?.visibility = View.GONE // Hide spinner
-
                     }
             }
         } else {
@@ -439,27 +446,22 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
             recipeRef.update(updatedRecipe)
                 .addOnSuccessListener {
                     handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
-                        dismiss() // Dismiss the dialog
-                        Toast.makeText(requireContext(), "Recipe updated successfully", Toast.LENGTH_SHORT).show()
+                        ToastUtils.showToast(this,"Recipe updated successfully")
                         progressBar?.visibility = View.GONE // Hide spinner
 
                         parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
                             putBoolean("refresh", true)
                         })
+                        dismiss() // Dismiss the dialog
                     }
-
-
-                    parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
-                        putBoolean("refresh", true)
-                    })
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error updating recipe: ${e.message}", Toast.LENGTH_SHORT).show()
-                     progressBar?.visibility = View.GONE // Hide spinner
-
+                    ToastUtils.showToast(this,"Error updating recipe: ${e.message}")
+                    progressBar?.visibility = View.GONE // Hide spinner
                 }
         }
     }
+
     private fun handleHashtagUpdates(recipeId: String,hashtagsToAdd: List<String>, hashtagsToRemove: List<String>, onComplete: () -> Unit) {
         firestore.runTransaction { transaction ->
             hashtagsToRemove.forEach { hashtag ->
@@ -496,9 +498,10 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
             onComplete()
         }.addOnFailureListener { e ->
             // Ensure the context is still valid before showing the Toast
-            if (isAdded && context != null) {
-                Toast.makeText(requireContext(), "Error updating hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
+            //if (isAdded && context != null) {
+             //   Toast.makeText(requireContext(), "Error updating hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
+          //  }
+            ToastUtils.showToast(this,"Error updating hashtags: ${e.message}")
             progressBar?.visibility = View.GONE // Hide spinner
         }
     }
@@ -519,7 +522,8 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error uploading image: ${e.message}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(requireContext(), "Error uploading image: ${e.message}", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Error updating image: ${e.message}")
                 }
         }
     }

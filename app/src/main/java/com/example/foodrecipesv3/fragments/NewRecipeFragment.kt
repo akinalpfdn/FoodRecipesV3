@@ -3,6 +3,7 @@ package com.example.foodrecipesv3.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -29,8 +31,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
+import com.example.foodrecipesv3.activities.MainActivity
 import com.example.foodrecipesv3.adapters.AddedImageSliderAdapter
 import com.example.foodrecipesv3.utils.ImageUtils
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -262,8 +266,9 @@ class NewRecipeFragment : Fragment() {
 
 
     private fun selectImage() {
-        if (imageUris.size >= 3) {
-            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+        if (imageUris.size >= 10) {
+            ToastUtils.showToast(this,"You can only add up to 10 images.")
+           // Toast.makeText(requireContext(), "You can only add up to 10 images.", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -284,25 +289,27 @@ class NewRecipeFragment : Fragment() {
                 if (clipData != null) {
                     for (i in 0 until clipData.itemCount) {
                         val uri = clipData.getItemAt(i).uri
-                        if (imageUris.size < 3) {
+                        if (imageUris.size < 10) {
                             val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
                             resizedImageUri?.let {
                                 imageUris.add(it)
                             }
                         } else {
-                            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+                            ToastUtils.showToast(this,"You can only add up to 10 images.")
+                           // Toast.makeText(requireContext(), "You can only add up to 10 images.", Toast.LENGTH_SHORT).show()
                             break
                         }
                     }
                 } else {
                     intentData.data?.let { uri ->
-                        if (imageUris.size < 3) {
+                        if (imageUris.size < 10) {
                             val resizedImageUri = ImageUtils.resizeImage(requireContext(), uri) // Use utility function
                             resizedImageUri?.let {
                                 imageUris.add(it)
                             }
                         } else {
-                            Toast.makeText(requireContext(), "You can only add up to 3 images.", Toast.LENGTH_SHORT).show()
+                            ToastUtils.showToast(this,"You can only add up to 10 images.")
+                           // Toast.makeText(requireContext(), "You can only add up to 10 images.", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -322,7 +329,8 @@ class NewRecipeFragment : Fragment() {
         progressBar?.visibility = View.VISIBLE // Spinner'ı göster
         val userId = auth.currentUser?.uid
         if (userId == null) {
-            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+            ToastUtils.showToast(this,"User not logged in")
+           // Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
             progressBar?.visibility = View.GONE // Spinner'ı gizle
             return
         }
@@ -359,11 +367,28 @@ class NewRecipeFragment : Fragment() {
                 .addOnSuccessListener {
 
                     saveHashtagsAndAssociations(recipeRef.id, hashtagList)
-                    Toast.makeText(requireContext(), "Recipe saved successfully", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Recipe saved successfully")
+                    // Recipe added successfully, now increment the recipe counter
+                    val configDocRef = firestore.collection("config").document("recipeCounter")
+                    configDocRef.update("recipeCount", FieldValue.increment(1))
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Recipe counter updated")
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w(TAG, "Error updating recipe counter", e)
+                        }
+                   // Toast.makeText(requireContext(), "Recipe saved successfully", Toast.LENGTH_SHORT).show()
                     progressBar?.visibility = View.GONE // Spinner'ı gizle
+
+                    // Switch to the "Tariflerim" (My Recipes) fragment
+                    (activity as? MainActivity)?.let {
+                        it.loadFragment(MyRecipesFragment()) // Call loadFragment from MainActivity
+                        it.updateBottomNavigation(R.id.navigation_my_recipes) // Update selected nav item
+                    }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Error saving recipe: ${e.message}")
+                   // Toast.makeText(requireContext(), "Error saving recipe: ${e.message}", Toast.LENGTH_SHORT).show()
                     progressBar?.visibility = View.GONE // Spinner'ı gizle
                 }
         }
@@ -395,7 +420,8 @@ class NewRecipeFragment : Fragment() {
                 // Handle success if needed
             }.addOnFailureListener { e ->
                 // Handle failure if needed
-                Toast.makeText(requireContext(), "Error updating hashtag: ${e.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error updating hashtag: ${e.message}")
+                //Toast.makeText(requireContext(), "Error updating hashtag: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -416,7 +442,8 @@ class NewRecipeFragment : Fragment() {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(requireContext(), "Error uploading image: ${e.message}", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Error uploading image: ${e.message}")
+                    //Toast.makeText(requireContext(), "Error uploading image: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
     }

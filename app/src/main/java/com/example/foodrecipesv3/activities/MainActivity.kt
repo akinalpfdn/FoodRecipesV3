@@ -1,6 +1,10 @@
 package com.example.foodrecipesv3.activities
 
 import CustomTypefaceSpan
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
@@ -8,6 +12,7 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.util.Log
@@ -30,18 +35,24 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.example.foodrecipesv3.fragments.ApproveFragment
 import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
 import com.example.foodrecipesv3.fragments.NewRecipeFragment
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.tasks.PollingWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
+import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -72,7 +83,42 @@ class MainActivity : AppCompatActivity() {
         toolBarProgressBar.setOnClickListener {
             showTooltip(title)//bu daha iyi hizalamak içi, barı verince hizalanmiyordu
         }
-        //admin ekrani atama
+        //user tokenlerini kaydetmek icin
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            val token = task.result
+            // Store the token in Firestore
+            auth.currentUser?.uid?.let {
+                FirebaseFirestore.getInstance().collection("users").document(it)
+                    .set(mapOf("fcmToken" to token), SetOptions.merge())
+                    .addOnSuccessListener {
+                        Log.d(TAG, "FCM token updated/created successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error updating FCM token", e)
+                    }
+            }
+
+        }
+        //notification Builder
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "admin_channel",
+                "Admin Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT
+            ).apply {
+                description = "Channel for admin notifications"
+            }
+
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+        //admin ekrani atama ve admin kontrolleri
         val currentUser = FirebaseAuth.getInstance().currentUser
         if (currentUser != null) {
             val userId = currentUser.uid
@@ -91,6 +137,8 @@ class MainActivity : AppCompatActivity() {
                         (adminEmails != null && adminEmails.contains(userEmail))) {
                         // User is an admin, add the admin menu item
                         addAdminMenuItem()
+                        //schedule job İçim
+                        scheduleRecipePolling()
                     }
                 }
             }
@@ -415,9 +463,21 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-    private fun loadFragment(fragment: Fragment) {
+    fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.nav_host_fragment, fragment)
             .commit()
+    }
+    // Function to update the selected item in BottomNavigationView
+    fun updateBottomNavigation(selectedItemId: Int) {
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        navView.selectedItemId = selectedItemId
+    }
+
+    fun scheduleRecipePolling() {
+        val workRequest = PeriodicWorkRequestBuilder<PollingWorker>(5, TimeUnit.MINUTES)
+            .build()
+
+        WorkManager.getInstance(applicationContext).enqueue(workRequest)
     }
 }
