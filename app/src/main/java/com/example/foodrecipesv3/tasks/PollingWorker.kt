@@ -15,6 +15,7 @@ class PollingWorker(context: Context, workerParams: WorkerParameters) : Worker(c
     override fun doWork(): Result {
         val db = FirebaseFirestore.getInstance()
         val configDocRef = db.collection("config").document("recipeCounter")
+        Log.w(TAG, "its working" )
 
         configDocRef.get().addOnSuccessListener { document ->
             if (document != null) {
@@ -27,6 +28,7 @@ class PollingWorker(context: Context, workerParams: WorkerParameters) : Worker(c
                 // If the remote count is greater, a new recipe was added
                 if (remoteRecipeCount > localRecipeCount) {
                     sendNotification()
+                    Log.w(TAG, "notification sended successfully" )
 
                     // Update the cached value with the new count
                     sharedPreferences.edit().putLong("cachedRecipeCount", remoteRecipeCount).apply()
@@ -41,7 +43,7 @@ class PollingWorker(context: Context, workerParams: WorkerParameters) : Worker(c
 
     private fun sendNotification() {
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationBuilder = NotificationCompat.Builder(applicationContext, "admin_channel_id")
+        val notificationBuilder = NotificationCompat.Builder(applicationContext, "admin_channel")
             .setSmallIcon(R.drawable.baseline_android_24)
             .setContentTitle("New Recipe Added")
             .setContentText("A new recipe has been added and needs approval.")

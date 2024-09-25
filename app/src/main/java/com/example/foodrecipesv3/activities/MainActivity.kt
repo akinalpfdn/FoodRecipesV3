@@ -12,8 +12,11 @@ import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
+import android.provider.Settings
 import android.text.SpannableString
 import android.util.Log
 import android.view.Gravity
@@ -139,6 +142,8 @@ class MainActivity : AppCompatActivity() {
                         addAdminMenuItem()
                         //schedule job İçim
                         scheduleRecipePolling()
+                        //battery request for the admin
+                        //requestBatteryPermission()
                     }
                 }
             }
@@ -213,6 +218,19 @@ class MainActivity : AppCompatActivity() {
         // Varsayılan olarak HomeFragment'i yükleyin
         loadFragment(HomeFragment())
     }
+/*
+    private fun requestBatteryPermission() {
+        val intent = Intent()
+        val packageName = applicationContext.packageName
+        val pm = applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+            intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            intent.data = Uri.parse("package:$packageName")
+            startActivity(intent)
+        }
+    }
+*/
     private fun setFontForMenuItem(menuItem: MenuItem, typeface: Typeface) {
         val spannableTitle = SpannableString(menuItem.title)
         spannableTitle.setSpan(CustomTypefaceSpan("", typeface), 0, spannableTitle.length, 0)
@@ -475,7 +493,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun scheduleRecipePolling() {
-        val workRequest = PeriodicWorkRequestBuilder<PollingWorker>(5, TimeUnit.MINUTES)
+        Log.w(TAG, "IT IS WORKING" )
+        val workRequest = PeriodicWorkRequestBuilder<PollingWorker>(15, TimeUnit.MINUTES)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueue(workRequest)
