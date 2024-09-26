@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="Title"
-                    android:fontFamily="@font/merienda"
+                    android:fontFamily="@font/lato_regular"
                     android:hint="@string/recipe_title"
                     android:textAlignment="center"
                     android:background="@drawable/border_background"
@@ -96,7 +96,7 @@
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:text="@string/ingredients"
-                    android:fontFamily="@font/gloria"
+                    android:fontFamily="@font/lato_regular"
                     android:textColor="@color/text_color_secondary"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -124,7 +124,7 @@
                 android:orientation="horizontal"
                 android:text="@string/detailed_recipe"
                 android:textColor="@color/text_color_secondary"
-                android:fontFamily="@font/gloria"
+                android:fontFamily="@font/lato_regular"
                 android:textSize="18sp"
                 android:textStyle="bold" />
             <View
@@ -143,6 +143,7 @@
                 android:layout_marginBottom="16dp"
                 android:autofillHints="recipe"
                 android:minLines="5"
+                android:textSize="16sp"
                 android:textColor="@color/text_color_primary"
                 android:textColorHint="@color/hint_color" />
 

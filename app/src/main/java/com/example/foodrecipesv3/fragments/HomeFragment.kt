@@ -31,6 +31,7 @@ import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.utils.PreferenceHelper
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,6 +43,7 @@ class HomeFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var toggleButton: ImageButton
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var searchView: SearchView
     private lateinit var auth: FirebaseAuth
     private var progressBar: ProgressBar? = null
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
@@ -97,6 +99,9 @@ class HomeFragment : Fragment() {
         ascendingIcon = view.findViewById(R.id.ascendingIcon)
         descendingIcon = view.findViewById(R.id.descendingIcon)
         progressBar = activity?.findViewById(R.id.progressBar)
+
+
+        searchView = view.findViewById<SearchView>(R.id.searchView)
         fetchRecipes(true)
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -139,7 +144,7 @@ class HomeFragment : Fragment() {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view2 = super.getDropDownView(position, convertView, parent) as TextView
                 view2.text = orderOptions[position] // Show full text in dropdown
-                val typeface: Typeface? = ResourcesCompat.getFont(requireContext(), R.font.merienda)
+                val typeface: Typeface? = ResourcesCompat.getFont(requireContext(), R.font.lato_regular)
                 typeface?.let { nonNullTypeface ->
                     setFontForOptionItem(view2, nonNullTypeface)
                 }
@@ -195,7 +200,7 @@ class HomeFragment : Fragment() {
             override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
                 val view2 = super.getDropDownView(position, convertView, parent) as TextView
                 view2.text = search_options[position] // Show full text in dropdown
-                val typeface: Typeface? = ResourcesCompat.getFont(requireContext(), R.font.merienda)
+                val typeface: Typeface? = ResourcesCompat.getFont(requireContext(), R.font.lato_regular)
                 typeface?.let { nonNullTypeface ->
                     setFontForOptionItem(view2, nonNullTypeface)
                 }
@@ -217,7 +222,6 @@ class HomeFragment : Fragment() {
         val displayMetrics = Resources.getSystem().displayMetrics
         val screenWidth = displayMetrics.widthPixels
         val halfScreenWidth = screenWidth / 2
-        val searchView = view.findViewById<SearchView>(R.id.searchView)
         searchView.setOnSearchClickListener {
             // User has clicked the search icon to expand the SearchView
             val paramsSpinner = spinnerSearchOptions.layoutParams as LinearLayout.LayoutParams
@@ -311,10 +315,11 @@ class HomeFragment : Fragment() {
             .map { it.filter { char -> char.isLetterOrDigit() } } // Remove non-alphanumeric characters
             .distinct() // Remove duplicates
     }
-    private fun fetchRecipes(initialLoad: Boolean, queryText: String = "") {
+    private fun fetchRecipes(initialLoad: Boolean, queryTextOld: String = "") {
         if (isLoading) return
         isLoading = true
 
+        val queryText = searchView.query.toString().trim()
         progressBar?.visibility = View.VISIBLE
         val userId = auth.currentUser?.uid
 
@@ -394,7 +399,8 @@ class HomeFragment : Fragment() {
                 progressBar?.visibility = View.GONE
                 swipeRefreshLayout.isRefreshing = false
                 // Handle the error
-                Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error loading recipes: ${exception.message}")
+                //Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
 
         isLoading = false

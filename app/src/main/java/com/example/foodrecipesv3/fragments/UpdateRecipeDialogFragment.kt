@@ -3,6 +3,7 @@ package com.example.foodrecipesv3.fragments
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -235,7 +237,7 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
             layoutParams = LinearLayout.LayoutParams(
                 0,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
-                1f
+                16f
             )
             hint = getString(R.string.add_an_ingredient)
             setText(text)
@@ -382,7 +384,42 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
     }
     private fun updateRecipe(title: String, hashtags: String, description: String, ingredientContainer: LinearLayout, imageUris: List<Uri>) {
         progressBar?.visibility = View.VISIBLE // Show spinner
+        if (title.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.titleRequired))
+            return
+        }
 
+
+        if (hashtags.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_hashtag))
+            return
+        }
+
+        if (description.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_description))
+            return
+        }
+
+        if (ingredientContainer.childCount == 0) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_ingredients))
+            return
+        }
+        else
+        {
+            for (i in 0 until ingredientContainer.childCount) {
+                val row = ingredientContainer.getChildAt(i) as LinearLayout
+                val editText = row.getChildAt(0) as EditText
+                if(editText.text.toString().isEmpty())
+                {
+                    ToastUtils.showToast(this, getString(R.string.error_empty_ingredients))
+                    return
+                }
+            }
+        }
+        if (imageUris.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_image))
+            return
+        }
         val userId = auth.currentUser?.uid
         if (userId == null) {
             ToastUtils.showToast(this,"User not logged in")
@@ -429,7 +466,14 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                         handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
                             ToastUtils.showToast(this,"Recipe updated successfully")
                             progressBar?.visibility = View.GONE // Hide spinner
-
+                            val configDocRef = firestore.collection("config").document("recipeCounter")
+                            configDocRef.update("recipeCount", FieldValue.increment(1))
+                                .addOnSuccessListener {
+                                    Log.d(ContentValues.TAG, "Recipe counter updated")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.w(ContentValues.TAG, "Error updating recipe counter", e)
+                                }
                             parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
                                 putBoolean("refresh", true)
                             })
@@ -448,7 +492,14 @@ class UpdateRecipeDialogFragment : BottomSheetDialogFragment() {
                     handleHashtagUpdates(recipeId, hashtagsToAdd, hashtagsToRemove) {
                         ToastUtils.showToast(this,"Recipe updated successfully")
                         progressBar?.visibility = View.GONE // Hide spinner
-
+                        val configDocRef = firestore.collection("config").document("recipeCounter")
+                        configDocRef.update("recipeCount", FieldValue.increment(1))
+                            .addOnSuccessListener {
+                                Log.d(ContentValues.TAG, "Recipe counter updated")
+                            }
+                            .addOnFailureListener { e ->
+                                Log.w(ContentValues.TAG, "Error updating recipe counter", e)
+                            }
                         parentFragmentManager.setFragmentResult("requestKey", Bundle().apply {
                             putBoolean("refresh", true)
                         })

@@ -4,6 +4,7 @@ cardview = "1.0.0"
 firebaseStorage = "21.0.0"
 glide = "4.12.0"
 googleServices = "4.4.1"
+billingclient = "6.0.1"
 gradle = " 8.4.0"
 kotlin = "1.9.23"
 coreKtx = "1.13.1"
@@ -30,6 +31,7 @@ workRuntimeKtx = "2.9.1"
 
 [libraries]
 androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+android-billing = { module = "com.android.billingclient:billing", version.ref = "billingclient" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }

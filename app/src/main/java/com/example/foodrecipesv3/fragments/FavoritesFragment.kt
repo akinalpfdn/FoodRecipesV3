@@ -31,6 +31,7 @@ import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.utils.PreferenceHelper
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldPath
@@ -331,7 +332,9 @@ class FavoritesFragment  : Fragment() {
                     progressBar?.visibility = View.GONE
                     swipeRefreshLayout.isRefreshing = false
                     // Optionally, display a message that there are no saved recipes
-                    Toast.makeText(requireContext(), "No saved recipes found", Toast.LENGTH_SHORT).show()
+
+                    ToastUtils.showToast(this,"No saved recipes found")
+                   // Toast.makeText(requireContext(), "No saved recipes found", Toast.LENGTH_SHORT).show()
                     return@addOnSuccessListener
                 }
                 var query: Query = firestore.collection("recipes")
@@ -408,18 +411,23 @@ class FavoritesFragment  : Fragment() {
                         progressBar?.visibility = View.GONE
                         swipeRefreshLayout.isRefreshing = false
                         // Handle the error
+                        ToastUtils.showToast(this,"Error fetching recipes: ${exception.message}")
+                        /*
                         Toast.makeText(
                             requireContext(),
                             "Error fetching recipes: ${exception.message}",
                             Toast.LENGTH_SHORT
                         ).show()
+
+                         */
                     }
             }
             .addOnFailureListener { exception ->
                 isLoading = false
                 progressBar?.visibility = View.GONE
                 swipeRefreshLayout.isRefreshing = false
-                Toast.makeText(requireContext(), "Error fetching saved recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error fetching saved recipes: ${exception.message}")
+              //  Toast.makeText(requireContext(), "Error fetching saved recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         isLoading = false
         progressBar?.visibility = View.GONE

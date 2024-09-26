@@ -32,6 +32,7 @@ import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.ApproveRecipeAdapter
 import com.example.foodrecipesv3.adapters.RecipeAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -158,7 +159,8 @@ class ApproveFragment : Fragment() {
                 progressBar?.visibility = View.GONE
                 swipeRefreshLayout.isRefreshing = false
                 // Handle the error
-                Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error fetching recipes: ${exception.message}")
+              //  Toast.makeText(requireContext(), "Error fetching recipes: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
 
         isLoading = false
@@ -186,7 +188,8 @@ class ApproveFragment : Fragment() {
             }
             .addOnFailureListener { e ->
                 // Handle the error, perhaps showing a message to the user
-                Toast.makeText(requireContext(), "Error approving recipe!", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error approving recipe!")
+              //  Toast.makeText(requireContext(), "Error approving recipe!", Toast.LENGTH_SHORT).show()
                 progressBar?.visibility = View.GONE
             }
     }

@@ -7,11 +7,11 @@
         android:title="@string/logout"
         android:orderInCategory="100"
         app:showAsAction="never" />
-    <!--<item
-        android:id="@+id/menu_light_mode"
-        android:title="Light Mode" />
     <item
-        android:id="@+id/menu_dark_mode"
-        android:title="Dark Mode" />
-        -->
+        android:id="@+id/suggestions"
+        android:title="Görüş ve Öneriler" />
+    <item
+        android:id="@+id/in_app_purchases"
+        android:title="Bana Bir Şey Ismarla" />
+
 </menu>

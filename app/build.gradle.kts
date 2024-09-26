@@ -45,7 +45,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    //implementation(libs.gradle)
+    implementation(libs.android.billing)
     implementation(libs.google.services)
     implementation(libs.material) // Specify version
     implementation(libs.androidx.cardview)           // Specify version

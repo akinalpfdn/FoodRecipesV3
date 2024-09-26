@@ -40,6 +40,13 @@
     <string name="admin">Admin</string>
     <string name="approve_recipe">approve</string>
     <string name="expand_image">expand image</string>
+    <string name="suggestions">Öneri ve görüşlerinizi yazınız.</string>
+    <string name="sendSuggestions">Gönder</string>
+    <string name="titleRequired">Lütfen bir başlık girin</string>
+    <string name="error_empty_hashtag">Lütfen en az bir hashtag girin</string>
+    <string name="error_empty_description">Lütfen tarif açıklamasını girin</string>
+    <string name="error_empty_ingredients">Lütfen en az bir malzeme ekleyin</string>
+    <string name="error_empty_image">Lütfen en az bir resim ekleyin</string>
     <string-array name="order_options">
         <item>Date</item>
         <item>Like Count</item>

@@ -38,6 +38,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.foodrecipesv3.fragments.ApproveFragment
@@ -45,6 +46,8 @@ import com.example.foodrecipesv3.fragments.FavoritesFragment
 import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
 import com.example.foodrecipesv3.fragments.NewRecipeFragment
+import com.example.foodrecipesv3.fragments.OtherRecipeDialogFragment
+import com.example.foodrecipesv3.fragments.SuggestionsFragment
 import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.tasks.PollingWorker
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -205,7 +208,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val menu = navView.menu
-        val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.merienda)
+        val typeface: Typeface? = ResourcesCompat.getFont(this, R.font.lato_regular)
         typeface?.let { nonNullTypeface ->
             for (i in 0 until menu.size()) {
                 val menuItem = menu.getItem(i)
@@ -460,12 +463,14 @@ class MainActivity : AppCompatActivity() {
                 logout()
                 true
             }
-            /*
-            R.id.menu_light_mode -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+            R.id.suggestions -> {
+
+                val fragment = SuggestionsFragment.newInstance( )
+                fragment.show( supportFragmentManager, "SuggestionsFragment")
                 true
-            }
-            R.id.menu_dark_mode -> {
+            }/*
+            R.id.in_app_purchases -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 true
             }

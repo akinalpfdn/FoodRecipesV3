@@ -17,6 +17,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.foodrecipesv3.R
 import com.example.foodrecipesv3.adapters.ImageSliderAdapter
 import com.example.foodrecipesv3.models.Recipe
+import com.example.foodrecipesv3.utils.ToastUtils
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -147,11 +148,13 @@ class OtherRecipeDialogFragment : BottomSheetDialogFragment() {
                     currentRecipe = document.toObject(Recipe::class.java)!!
                     fetchHashtagsForRecipe(currentRecipe)
                 } else {
-                    Toast.makeText(requireContext(), "Recipe not found", Toast.LENGTH_SHORT).show()
+                    ToastUtils.showToast(this,"Recipe not found")
+                    //Toast.makeText(requireContext(), "Recipe not found", Toast.LENGTH_SHORT).show()
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error loading recipe: ${e.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error loading recipe: ${e.message}")
+                //Toast.makeText(requireContext(), "Error loading recipe: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
     private fun fetchHashtagsForRecipe(recipe: Recipe) {
@@ -163,7 +166,8 @@ class OtherRecipeDialogFragment : BottomSheetDialogFragment() {
                 fillRecipeData(recipe, hashtags.joinToString(" "))
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Error loading hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
+                ToastUtils.showToast(this,"Error loading hashtags: ${e.message}")
+                //Toast.makeText(requireContext(), "Error loading hashtags: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
     private fun fillRecipeData(recipe: Recipe, hashtags: String) {

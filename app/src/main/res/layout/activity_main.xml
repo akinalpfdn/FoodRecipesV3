@@ -23,9 +23,8 @@
             android:gravity="center"
             android:text="@string/level"
             android:textColor="@color/bottom_nav_text"
-            android:fontFamily="@font/caveat"
-            android:textSize="22sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="18sp"
             android:paddingEnd="2dp"
             android:layout_margin="4dp"
             tools:ignore="RtlSymmetry" />

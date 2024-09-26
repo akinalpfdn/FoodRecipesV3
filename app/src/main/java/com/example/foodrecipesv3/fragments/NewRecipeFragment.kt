@@ -326,6 +326,43 @@ class NewRecipeFragment : Fragment() {
     }
 
     private fun saveRecipe(title: String, hashtags: String,description: String,ingredientContainer: LinearLayout, imageUris: List<Uri>) {
+        // Boş alan kontrolü
+        if (title.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.titleRequired))
+            return
+        }
+
+
+        if (hashtags.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_hashtag))
+            return
+        }
+
+        if (description.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_description))
+            return
+        }
+
+        if (ingredientContainer.childCount == 0) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_ingredients))
+            return
+        }
+        else
+        {
+            for (i in 0 until ingredientContainer.childCount) {
+                val row = ingredientContainer.getChildAt(i) as LinearLayout
+                val editText = row.getChildAt(0) as EditText
+                if(editText.text.toString().isEmpty())
+                {
+                    ToastUtils.showToast(this, getString(R.string.error_empty_ingredients))
+                    return
+                }
+            }
+        }
+        if (imageUris.isEmpty()) {
+            ToastUtils.showToast(this, getString(R.string.error_empty_image))
+            return
+        }
         progressBar?.visibility = View.VISIBLE // Spinner'ı göster
         val userId = auth.currentUser?.uid
         if (userId == null) {
