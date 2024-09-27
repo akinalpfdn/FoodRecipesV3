@@ -47,6 +47,7 @@ import com.example.foodrecipesv3.fragments.HomeFragment
 import com.example.foodrecipesv3.fragments.MyRecipesFragment
 import com.example.foodrecipesv3.fragments.NewRecipeFragment
 import com.example.foodrecipesv3.fragments.OtherRecipeDialogFragment
+import com.example.foodrecipesv3.fragments.PurchaseFragment
 import com.example.foodrecipesv3.fragments.SuggestionsFragment
 import com.example.foodrecipesv3.models.Recipe
 import com.example.foodrecipesv3.tasks.PollingWorker
@@ -154,7 +155,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // Örnek olarak progress bar'ı %50 yapalım
-        toolBarProgressBar.progress = 70
+        // toolBarProgressBar.progress = 70
         getUserScore(title,toolBarProgressBar)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
         navView.setOnNavigationItemSelectedListener { item ->
@@ -265,31 +266,30 @@ class MainActivity : AppCompatActivity() {
                 8 -> "3 Yıldız Şef"
                 else -> "3 Yıldız Şef"
             }
-            val drawable = when (totalScore / 100) {
-                0 -> ContextCompat.getDrawable(this, R.drawable.bulasikci)
-                1 -> ContextCompat.getDrawable(this, R.drawable.garson)
-                2 -> ContextCompat.getDrawable(this, R.drawable.cirak)
-                3 -> ContextCompat.getDrawable(this, R.drawable.asci)
-                4 -> ContextCompat.getDrawable(this, R.drawable.sef)
-                5 -> ContextCompat.getDrawable(this, R.drawable.master)
-                6 -> ContextCompat.getDrawable(this, R.drawable.star)
-                7 -> ContextCompat.getDrawable(this, R.drawable.start2)
-                8 -> ContextCompat.getDrawable(this, R.drawable.star3)
-                else -> ContextCompat.getDrawable(this, R.drawable.star3)
+            val drawable = when (totalScore) {
+                in 0..99 -> ContextCompat.getDrawable(this, R.drawable.bulasikci)    // Score between 0 and 99
+                in 100..249 -> ContextCompat.getDrawable(this, R.drawable.garson)    // Score between 100 and 249
+                in 250..449 -> ContextCompat.getDrawable(this, R.drawable.cirak)     // Score between 250 and 449
+                in 450..899 -> ContextCompat.getDrawable(this, R.drawable.asci)      // Score between 450 and 899
+                in 900..1799 -> ContextCompat.getDrawable(this, R.drawable.sef)      // Score between 900 and 1799
+                in 1800..3599 -> ContextCompat.getDrawable(this, R.drawable.master)  // Score between 1800 and 3599
+                in 3600..7199 -> ContextCompat.getDrawable(this, R.drawable.star)    // Score between 3600 and 7199
+                in 7200..14999 -> ContextCompat.getDrawable(this, R.drawable.start2)  // Score between 7200 and 14999
+                else -> ContextCompat.getDrawable(this, R.drawable.star3)            // Score 15000 or more
             }
             drawable?.let {
-                val scaledDrawable = when (totalScore / 100) {
-                    0 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    1 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    2 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    3 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    4 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    5 -> scaleDrawable(it, 35, 35) // Adjust width and height as needed
-                    6 -> scaleDrawable(it, 20, 20) // Adjust width and height as needed
-                    7 -> scaleDrawable(it, 35, 20) // Adjust width and height as needed
-                    8 -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
-                    else -> scaleDrawable(it, 30, 30) // Adjust width and height as needed
+                val scaledDrawable = when (totalScore) {
+                    in 0..99 -> scaleDrawable(it, 35, 35)    // Score between 0 and 99
+                    in 100..249 -> scaleDrawable(it, 35, 35) // Score between 100 and 249
+                    in 250..449 -> scaleDrawable(it, 35, 35) // Score between 250 and 449
+                    in 450..899 -> scaleDrawable(it, 35, 35) // Score between 450 and 899
+                    in 900..1799 -> scaleDrawable(it, 35, 35) // Score between 900 and 1799
+                    in 1800..3599 -> scaleDrawable(it, 35, 35) // Score between 1800 and 3599
+                    in 3600..7199 -> scaleDrawable(it, 20, 20) // Score between 3600 and 7199
+                    in 7200..14999 -> scaleDrawable(it, 35, 20) // Score between 7200 and 14999
+                    else -> scaleDrawable(it, 30, 30)         // Score 15000 or more
                 }
+
                 title.setCompoundDrawablesWithIntrinsicBounds(scaledDrawable, null, null, null)
             }
         }
@@ -388,7 +388,7 @@ class MainActivity : AppCompatActivity() {
 
         val location = IntArray(2)
         anchorView.getLocationOnScreen(location)
-        val xOffset = location[0] - (tooltipView.measuredWidth - anchorView.width) / 2
+        val xOffset = location[0]// - (tooltipView.measuredWidth - anchorView.width) / 2
         val yOffset = location[1] - tooltipView.measuredHeight - 20
 
         tooltipPopup.showAtLocation(anchorView, Gravity.NO_GRAVITY, xOffset, yOffset)
@@ -469,12 +469,13 @@ class MainActivity : AppCompatActivity() {
                 val fragment = SuggestionsFragment.newInstance( )
                 fragment.show( supportFragmentManager, "SuggestionsFragment")
                 true
-            }/*
+            }
             R.id.in_app_purchases -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                val fragment = PurchaseFragment.newInstance( )
+                fragment.show( supportFragmentManager, "PurchaseFragment")
                 true
             }
-             */
+
             else -> super.onOptionsItemSelected(item)
         }
     }
